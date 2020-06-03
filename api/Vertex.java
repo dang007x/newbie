@@ -1,5 +1,5 @@
 package api;
 
-public class Vertex {
+public class Vertex<V> {
     
 }
