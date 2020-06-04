@@ -1,15 +1,17 @@
 package api;
 
 public class Vertex<V> {
+
     private V element;
 
     public Vertex(V element) {
         this.element = element;
     }
 
-    public Vertex(){
-        
+    public Vertex() {
+
     }
+
     public V getElement() {
         return element;
     }
@@ -18,6 +20,4 @@ public class Vertex<V> {
         this.element = element;
     }
 
-   
-    
 }
