@@ -1,12 +1,12 @@
 package app.model;
 
-public class Vertex {
+public class Node {
     private String label;
     private double x;
     private double y;
     private double f;
 
-    public Vertex(String label, double x, double y, double f) {
+    public Node(String label, double x, double y, double f) {
         this.label = label;
         this.x = x;
         this.y = y;

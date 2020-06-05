@@ -1,16 +1,28 @@
 package test;
 
 public class Test {
-    public static void add(int i, int j){
-        if(j > 10){
-            System.out.println(j);
-            return;
+   
+    static class Obj {
+        String label;
+        int x;
+        int y;
+
+        public Obj() {
         }
-        System.out.println("Done");
-        add(i, j + 1);
+
+        public Obj(String label, int x, int y) {
+            this.label = label;
+            this.x = x;
+            this.y = y;
+        }
+        
+        
     }
 
     public static void main(String[] args) {
-        add(0, 1);
+
+        
+
+        
     }
 }
