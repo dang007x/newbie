@@ -12,10 +12,8 @@ public class Maze {
     private int count;
     private int[] pos = { 1, 1 };
     private Graph<Double, Node> g = new Graph<>();
-    private Node curNode;
     private Vertex<Node> v;
-    private int index;
-    private int oldDirection = -1;
+    private int index = 0;
 
     public Maze(int size) {
         if (size % 2 == 0) {
@@ -26,40 +24,40 @@ public class Maze {
         this.matrix = new int[this.size][this.size];
         this.count = (this.size - 1) * (this.size - 1) / 4;
     }
-
-    public void createMatrix() {
-        index = count + 1;
+    // Create maze and graph
+    public void create() {
+        // Set beginning
         matrix[0][1] = 3;
-        curNode = new Node(String.valueOf(index - count), 0, 1, 0);
-        v = new Vertex<Node>(curNode);
-       
-    }
+        Node n = new Node(String.valueOf(index++), 0, 1, 0);
 
-    public void createMaze() {
+        // Add first node to graph
         matrix[pos[0]][pos[1]] = 1;
         count--;
-        curNode = new Node(String.valueOf(index - count), 1, 1, 0);
-       
+        Node m = new Node(String.valueOf(index++), 1, 1, 0);
+
+        g.addVertex(n);
+        g.addVertex(m);
+        v = g.get(n);
+        Vertex<Node> u = g.get(m);
+        g.addEdge(v, u);
+        v = u;
         Random r = new Random();
 
         while (count > 0) {
-
             ArrayList<Integer> direction = getDirection(pos);
             int k = r.nextInt(direction.size());
             createPath(pos, direction.get(k));
         }
+        // Set ending
+        matrix[size - 2][size - 1] = 3;
+        n = new Node(String.valueOf(index++), size - 1, size - 2, 0);
+        m = new Node(String.valueOf(index), size - 2, size - 2, 0);
+        g.addVertex(n);
+        g.addEdge(g.get(n), g.get(m));
+
     }
 
-    private void format() {
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix.length; j++) {
-                if (matrix[i][j] == 2) {
-                    matrix[i][j] = 0;
-                }
-            }
-        }
-    }
-
+    // Evaluate distance betweent two nodes
     private double evalWeight(Node a, Node b) {
         if (a.getX() == b.getX()) {
             if (a.getY() - b.getY() > 0) {
@@ -84,51 +82,93 @@ public class Maze {
             System.out.println();
         }
     }
-
-    private void createPath(int[] pos, Integer integer) {
+    // Create path and add nodes to graph
+    private void createPath(int[] pos, Integer direction) {
         int i = pos[0], j = pos[1];
-        switch (integer) {
-            case 0:
-                if (matrix[i - 2][j] == 0) {
+        switch (direction) {
+            case 0: // up
+
+                // g.print();
+                // System.out.println("----------");
+                if (matrix[i - 2][j] == 0) { // if not visit
+                    Node a = new Node(String.valueOf(index++), j, i - 2, 0);
+
                     matrix[i - 1][j] = 1;
                     count--;
                     matrix[i - 2][j] = 1;
+                    g.addVertex(a);
+                    Vertex<Node> u = g.get(a);
+                    g.addEdge(v, u);
                 }
+                // if visited
+                Node a = new Node(String.valueOf(index), j, i - 2, 0);
+                v = g.get(a);
                 i = i - 2;
                 pos[0] = i;
                 break;
-            case 1:
-                if (matrix[i][j + 2] == 0) {
+            case 1: // right
+
+                // g.print();
+                // System.out.println("----------");
+                if (matrix[i][j + 2] == 0) { // if node visit
+                    Node b = new Node(String.valueOf(index++), j + 2, i, 0);
                     matrix[i][j + 1] = 1;
                     count--;
                     matrix[i][j + 2] = 1;
+                    g.addVertex(b);
+                    Vertex<Node> u = g.get(b);
+                    g.addEdge(v, u);
                 }
+                // if visited
+                Node b = new Node(String.valueOf(index), j + 2, i, 0);
+                v = g.get(b);
                 j += 2;
                 pos[1] = j;
                 break;
-            case 2:
-                if (matrix[i + 2][j] == 0) {
+            case 2: // down
+
+                // g.print();
+                // System.out.println("----------");
+                if (matrix[i + 2][j] == 0) { // if not visit
+                    Node c = new Node(String.valueOf(index++), j, i + 2, 0);
                     matrix[i + 1][j] = 1;
                     count--;
                     matrix[i + 2][j] = 1;
+                    g.addVertex(c);
+                    Vertex<Node> u = g.get(c);
+                    g.addEdge(v, u);
                 }
+                // if visited
+                Node c = new Node(String.valueOf(index), j, i + 2, 0);
                 i = i + 2;
                 pos[0] = i;
+                v = g.get(c);
                 break;
-            case 3:
-                if (matrix[i][j - 2] == 0) {
+            case 3: // left
+
+                // g.print();
+                // System.out.println("----------");
+                if (matrix[i][j - 2] == 0) { // if not visit
+                    Node d = new Node(String.valueOf(index++), j - 2, i, 0);
                     matrix[i][j - 1] = 1;
                     count--;
                     matrix[i][j - 2] = 1;
+                    g.addVertex(d);
+                    Vertex<Node> u = g.get(d);
+                    g.addEdge(v, u);
                 }
+                // if visited
+                Node d = new Node(String.valueOf(index), j - 2, i, 0);
                 j = j - 2;
                 pos[1] = j;
+                v = g.get(d);
                 break;
             default:
                 break;
         }
     }
 
+    // Return possible direction of position
     private ArrayList<Integer> getDirection(int[] pos) {
         ArrayList<Integer> dir = new ArrayList<>();
         int i = pos[0], j = pos[1];
@@ -148,12 +188,22 @@ public class Maze {
     }
 
     public static void main(String[] args) {
-        Maze m = new Maze(1000);
+        Maze m = new Maze(7);
         // double s = System.currentTimeMillis();
-        // m.createMatrix();
-        m.createMaze();
+        // System.out.println(m.count);
+        m.create();
+
         // m.format();
         m.print();
+        ArrayList<Vertex<Node>> vertices = m.g.vertices();
+        for (int j = 0; j < vertices.size(); j++) {
+            System.out.println("Vertex: " + vertices.get(j).getElement().getX() + " "
+                    + vertices.get(j).getElement().getY() + "------");
+            for (int i = 0; i < vertices.get(j).getAdjVertice().size(); i++) {
+                System.out.println(vertices.get(j).getAdjVertice().get(i));
+            }
+        }
+        System.out.println(m.g.numEdge());
         // double e = System.currentTimeMillis();
         // System.out.println(e - s);
 

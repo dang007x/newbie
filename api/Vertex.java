@@ -5,11 +5,11 @@ import java.util.ArrayList;
 public class Vertex<V> {
 
     private V element;
-    private ArrayList<Vertex<V>> adjVertice;
+    private ArrayList<Vertex<V>> adjVertices;
 
     public Vertex(V element) {
         this.element = element;
-        this.adjVertice = new ArrayList<>();
+        this.adjVertices = new ArrayList<>();
     }
 
     public Vertex() {
@@ -17,11 +17,11 @@ public class Vertex<V> {
     }
 
     public ArrayList<Vertex<V>> getAdjVertice() {
-        return adjVertice;
+        return adjVertices;
     }
 
     public void setAdjVertice(ArrayList<Vertex<V>> adjVertice) {
-        this.adjVertice = adjVertice;
+        this.adjVertices = adjVertice;
     }
 
     public V getElement() {
@@ -42,8 +42,10 @@ public class Vertex<V> {
         return false;
     }
 
+   
+
     @Override
     public String toString() {
-        return String.valueOf(element);
+        return element.toString();
     }
 }

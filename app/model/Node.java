@@ -46,9 +46,16 @@ public class Node {
     }
 
     @Override
-    public String toString() {
-        return "Vertex [f=" + f + ", label=" + label + ", x=" + x + ", y=" + y + "]";
+    public boolean equals(Object object) {
+        Node other = (Node) object;
+        if(this.x == other.getX() && this.y == other.getY()){
+            return true;
+        }
+        return false;
     }
-    
-    
+    @Override
+    public String toString() {
+        return "Vertex [label=" + label + ", x=" + x + ", y=" + y + ", f=" + f + "]";
+    }
+
 }
