@@ -1,6 +1,6 @@
 package app.model;
 
-public class Node {
+public class Node implements Comparable<Node> {
     private String label;
     private double x;
     private double y;
@@ -58,4 +58,15 @@ public class Node {
         return "Vertex [label=" + label + ", x=" + x + ", y=" + y + ", f=" + f + "]";
     }
 
+    @Override
+    public int compareTo(Node o) {
+        if(o.getF() > this.getF()){
+            return -1;
+        }
+        else if(o.getF() < this.getF()){
+            return 1;
+        }
+        
+        return 0;
+    }
 }

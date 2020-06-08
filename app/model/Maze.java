@@ -1,6 +1,7 @@
 package app.model;
 
 import java.util.ArrayList;
+import java.util.PriorityQueue;
 import java.util.Random;
 
 import api.Graph;
@@ -55,6 +56,47 @@ public class Maze {
         g.addVertex(n);
         g.addEdge(g.get(n), g.get(m));
 
+    }
+
+    public ArrayList<Node> findPath(){
+        ArrayList<Node> path = new ArrayList<Node>();
+
+        ArrayList<Vertex<Node>> vertex = g.vertices();
+
+        double gx = 0; // the cost of the path from start to node n;
+
+        Node current = vertex.get(0).getElement();
+
+        PriorityQueue<Node> pq = new PriorityQueue<Node>();
+
+        Node end = vertex.get(vertex.size() - 1).getElement();
+
+        while (!current.equals(end)){
+            Vertex<Node> v = g.get(current);
+
+            for (int i = 0; i < v.getAdjVertice().size(); i++) {
+                Node u = v.getAdjVertice().get(i).getElement();
+
+                double fx = evalWeight(current, u) + gx + 
+                            eulerDistence(u, end);
+
+                u.setF(fx);
+
+                pq.add(v.getAdjVertice().get(i).getElement());
+            }
+            gx += 2;
+
+            current = pq.poll();
+            path.add(current);
+            pq = new PriorityQueue<Node>();
+        }
+        return path;
+    }
+
+    
+
+    public double eulerDistence(Node one, Node two){
+        return Math.sqrt((Math.pow(two.getX() - one.getX(), 2) + Math.pow(two.getY() - one.getY(), 2)));
     }
 
     // Evaluate distance betweent two nodes
