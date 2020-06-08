@@ -61,6 +61,17 @@ public class Graph<E, V> {
         return null;
     }
 
+    public Vertex<V> remove(V element){
+        Vertex<V> v = get(element);
+        vertices.remove(v);
+        for (int i = 0; i < v.getAdjVertice().size(); i++) {
+            if(v.getAdjVertice().get(i).getAdjVertice().contains(v)){
+                v.getAdjVertice().get(i).getAdjVertice().remove(v);
+            }
+        }
+        return v;
+    }
+
     public void print() {
         for (int i = 0; i < vertices.size(); i++) {
             System.out.println(vertices.get(i).toString());
@@ -71,8 +82,13 @@ public class Graph<E, V> {
         Graph<Integer, Integer> g = new Graph<>();
         g.addVertex(1);
         g.addVertex(2);
+        g.addVertex(3);
         Vertex<Integer> v = new Vertex<Integer>(1);
         Vertex<Integer> u = new Vertex<Integer>(2);
+        Vertex<Integer> z = new Vertex<Integer>(3);
         g.addEdge(v, u);
+        g.addEdge(v, z);
+        //g.remove(2);
+        System.out.println(g.adjVertices(v));
     }
 }

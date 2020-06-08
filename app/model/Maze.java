@@ -1,6 +1,7 @@
 package app.model;
 
 import java.util.ArrayList;
+import java.util.PriorityQueue;
 import java.util.Random;
 
 import api.Graph;
@@ -188,13 +189,15 @@ public class Maze {
     }
 
     public static void main(String[] args) {
-        Maze m = new Maze(7);
+        Maze m = new Maze(5);
         // double s = System.currentTimeMillis();
         // System.out.println(m.count);
         m.create();
 
         // m.format();
         m.print();
+        System.out.println(m.g.adjVertices(new Vertex<Node>(new Node("5", 4, 3, 0))));
+        m.g.remove(new Node("5", 4, 3, 0));
         ArrayList<Vertex<Node>> vertices = m.g.vertices();
         for (int j = 0; j < vertices.size(); j++) {
             System.out.println("Vertex: " + vertices.get(j).getElement().getX() + " "
@@ -203,9 +206,18 @@ public class Maze {
                 System.out.println(vertices.get(j).getAdjVertice().get(i));
             }
         }
-        System.out.println(m.g.numEdge());
+        
+        // System.out.println(m.g.numEdge());
         // double e = System.currentTimeMillis();
         // System.out.println(e - s);
+        // PriorityQueue<Node> pq = new PriorityQueue<>();
+        // pq.add(new Node("2", 0, 1, 10));
+        // pq.add(new Node("1", 1, 1, 20));
+        // pq.add(new Node("4", 1, 2, 012));
+        // pq.add(new Node("5", 0, 2, 11));
+        // System.out.println(pq.poll());
+
+
 
     }
 
