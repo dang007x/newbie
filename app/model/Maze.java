@@ -25,6 +25,7 @@ public class Maze {
         this.matrix = new int[this.size][this.size];
         this.count = (this.size - 1) * (this.size - 1) / 4;
     }
+
     // Create maze and graph
     public void create() {
         // Set beginning
@@ -58,7 +59,7 @@ public class Maze {
 
     }
 
-    public ArrayList<Node> findPath(){
+    public ArrayList<Node> findPath() {
         ArrayList<Node> path = new ArrayList<Node>();
 
         ArrayList<Vertex<Node>> vertex = g.vertices();
@@ -66,36 +67,57 @@ public class Maze {
         double gx = 0; // the cost of the path from start to node n;
 
         Node current = vertex.get(0).getElement();
+        Node prev = vertex.get(0).getElement();
+        Node start = vertex.get(0).getElement();
 
         PriorityQueue<Node> pq = new PriorityQueue<Node>();
 
         Node end = vertex.get(vertex.size() - 1).getElement();
 
-        while (!current.equals(end)){
+        while (!current.equals(end)) {
             Vertex<Node> v = g.get(current);
 
             for (int i = 0; i < v.getAdjVertice().size(); i++) {
                 Node u = v.getAdjVertice().get(i).getElement();
 
-                double fx = evalWeight(current, u) + gx + 
-                            eulerDistence(u, end);
+                double fx = evalWeight(current, u) + gx + eulerDistence(u, end);
 
                 u.setF(fx);
 
                 pq.add(v.getAdjVertice().get(i).getElement());
             }
-            gx += 2;
+            gx = gx + 2;
 
-            current = pq.poll();
             path.add(current);
-            pq = new PriorityQueue<Node>();
+
+            prev = current;
+            current = pq.poll();
+
+            Vertex<Node> afterMove = g.get(current);
+
+            if(afterMove.getAdjVertice().size() > 1){
+                pq = new PriorityQueue<Node>();
+            }
+            else if(afterMove.getAdjVertice().size() == 1 && current == end){
+                path.add(end);
+            }
+            else {
+                g.remove(current);
+                current = prev;
+                prev = start;
+                gx = gx - 2;
+
+                pq = new PriorityQueue<Node>();
+            }
+            
         }
         return path;
     }
 
     
 
-    public double eulerDistence(Node one, Node two){
+
+    public double eulerDistence(Node one, Node two) {
         return Math.sqrt((Math.pow(two.getX() - one.getX(), 2) + Math.pow(two.getY() - one.getY(), 2)));
     }
 
@@ -124,6 +146,7 @@ public class Maze {
             System.out.println();
         }
     }
+
     // Create path and add nodes to graph
     private void createPath(int[] pos, Integer direction) {
         int i = pos[0], j = pos[1];
@@ -230,13 +253,15 @@ public class Maze {
     }
 
     public static void main(String[] args) {
-        Maze m = new Maze(7);
+        Maze m = new Maze(5);
         // double s = System.currentTimeMillis();
         // System.out.println(m.count);
         m.create();
 
         // m.format();
         m.print();
+        System.out.println(m.g.adjVertices(new Vertex<Node>(new Node("5", 4, 3, 0))));
+        m.g.remove(new Node("5", 4, 3, 0));
         ArrayList<Vertex<Node>> vertices = m.g.vertices();
         for (int j = 0; j < vertices.size(); j++) {
             System.out.println("Vertex: " + vertices.get(j).getElement().getX() + " "
@@ -245,9 +270,16 @@ public class Maze {
                 System.out.println(vertices.get(j).getAdjVertice().get(i));
             }
         }
-        System.out.println(m.g.numEdge());
+
+        // System.out.println(m.g.numEdge());
         // double e = System.currentTimeMillis();
         // System.out.println(e - s);
+        // PriorityQueue<Node> pq = new PriorityQueue<>();
+        // pq.add(new Node("2", 0, 1, 10));
+        // pq.add(new Node("1", 1, 1, 20));
+        // pq.add(new Node("4", 1, 2, 012));
+        // pq.add(new Node("5", 0, 2, 11));
+        // System.out.println(pq.poll());
 
     }
 

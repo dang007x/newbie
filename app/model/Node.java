@@ -1,6 +1,5 @@
 package app.model;
-
-public class Node implements Comparable<Node> {
+public class Node implements Comparable<Node>{
     private String label;
     private double x;
     private double y;
