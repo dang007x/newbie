@@ -87,35 +87,30 @@ public class Maze {
                 pq.add(v.getAdjVertice().get(i).getElement());
             }
             gx = gx + 2;
-
+            
             path.add(current);
-
+            
             prev = current;
             current = pq.poll();
 
             Vertex<Node> afterMove = g.get(current);
 
             if(afterMove.getAdjVertice().size() > 1){
-                pq = new PriorityQueue<Node>();
             }
             else if(afterMove.getAdjVertice().size() == 1 && current == end){
                 path.add(end);
             }
             else {
                 g.remove(current);
+                
                 current = prev;
                 prev = start;
                 gx = gx - 2;
-
-                pq = new PriorityQueue<Node>();
             }
-            
+            pq = new PriorityQueue<Node>();
         }
         return path;
     }
-
-    
-
 
     public double eulerDistence(Node one, Node two) {
         return Math.sqrt((Math.pow(two.getX() - one.getX(), 2) + Math.pow(two.getY() - one.getY(), 2)));
@@ -253,23 +248,23 @@ public class Maze {
     }
 
     public static void main(String[] args) {
-        Maze m = new Maze(5);
+        Maze m = new Maze(10);
         // double s = System.currentTimeMillis();
         // System.out.println(m.count);
         m.create();
 
         // m.format();
         m.print();
-        System.out.println(m.g.adjVertices(new Vertex<Node>(new Node("5", 4, 3, 0))));
-        m.g.remove(new Node("5", 4, 3, 0));
-        ArrayList<Vertex<Node>> vertices = m.g.vertices();
-        for (int j = 0; j < vertices.size(); j++) {
-            System.out.println("Vertex: " + vertices.get(j).getElement().getX() + " "
-                    + vertices.get(j).getElement().getY() + "------");
-            for (int i = 0; i < vertices.get(j).getAdjVertice().size(); i++) {
-                System.out.println(vertices.get(j).getAdjVertice().get(i));
-            }
-        }
+        // System.out.println(m.g.adjVertices(new Vertex<Node>(new Node("5", 4, 3, 0))));
+        // m.g.remove(new Node("5", 4, 3, 0));
+        // ArrayList<Vertex<Node>> vertices = m.g.vertices();
+        // for (int j = 0; j < vertices.size(); j++) {
+        //     System.out.println("Vertex: " + vertices.get(j).getElement().getX() + " "
+        //             + vertices.get(j).getElement().getY() + "------");
+        //     for (int i = 0; i < vertices.get(j).getAdjVertice().size(); i++) {
+        //         System.out.println(vertices.get(j).getAdjVertice().get(i));
+        //     }
+        // }
 
         // System.out.println(m.g.numEdge());
         // double e = System.currentTimeMillis();
@@ -280,6 +275,12 @@ public class Maze {
         // pq.add(new Node("4", 1, 2, 012));
         // pq.add(new Node("5", 0, 2, 11));
         // System.out.println(pq.poll());
+        ArrayList<Node> node = new ArrayList<Node>();
+        node = m.findPath();
+
+        for(int i = 0; i < node.size(); i++){
+            System.out.println(node.get(i));
+        }
 
     }
 
