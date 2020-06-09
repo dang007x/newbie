@@ -59,6 +59,7 @@ public class Maze {
 
     }
 
+    //Coding continues...
     public ArrayList<Node> findPath() {
         ArrayList<Node> path = new ArrayList<Node>();
 
@@ -77,6 +78,8 @@ public class Maze {
         while (!current.equals(end)) {
             Vertex<Node> v = g.get(current);
 
+            System.out.println(v);
+
             for (int i = 0; i < v.getAdjVertice().size(); i++) {
                 Node u = v.getAdjVertice().get(i).getElement();
 
@@ -84,7 +87,7 @@ public class Maze {
 
                 u.setF(fx);
 
-                pq.add(v.getAdjVertice().get(i).getElement());
+                pq.add(u);
             }
             gx = gx + 2;
             
@@ -93,11 +96,11 @@ public class Maze {
             prev = current;
             current = pq.poll();
 
-            Vertex<Node> afterMove = g.get(current);
+            Vertex<Node> next = g.get(current);
 
-            if(afterMove.getAdjVertice().size() > 1){
+            if(next.getAdjVertice().size() > 1){
             }
-            else if(afterMove.getAdjVertice().size() == 1 && current == end){
+            else if(next.getAdjVertice().size() == 1 && current == end){
                 path.add(end);
             }
             else {
