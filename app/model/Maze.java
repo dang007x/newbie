@@ -188,6 +188,9 @@ public class Maze {
         return dir;
     }
 
+    public int[][] getMatrix() {
+        return matrix;
+    }
     public static void main(String[] args) {
         Maze m = new Maze(5);
         // double s = System.currentTimeMillis();

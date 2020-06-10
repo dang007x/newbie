@@ -6,6 +6,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import app.model.Maze;
+
 public class App extends JFrame{
 
     /**
@@ -15,6 +17,12 @@ public class App extends JFrame{
     private JButton playButton;
     private JButton solveButton;
     private JButton changeMaze;
+    private JButton newGameButton;
+    private JButton tutorial;
+    private JPanel mazePanel;
+    private int mazeSize = 5;
+    private Maze maze = new Maze(mazeSize);
+    private MazePanel mainPanel;
 
     public App(){
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -31,8 +39,27 @@ public class App extends JFrame{
         
         solveButton = new JButton("Solve");
         solveButton.setEnabled(false);
-        
         changeMaze = new JButton("ChangeMaze");
+        newGameButton = new JButton("New Game");
+        tutorial = new JButton("Tutorial");
+
+        buttonPanel.add(playButton);
+        buttonPanel.add(solveButton);
+        buttonPanel.add(changeMaze);
+        buttonPanel.add(newGameButton);
+        buttonPanel.add(tutorial);
+
+        mazePanel = new JPanel();
+        mazePanel.setLayout(new BorderLayout());
+        mazePanel.setBounds(0, 50, 700, 620);
+
+        maze.create();
+        mainPanel = new MazePanel(maze.getMatrix());
+       
+        mazePanel.add(mainPanel, BorderLayout.CENTER);
+        
+        this.add(mazePanel);
+        this.add(buttonPanel);
     }
     
 }
