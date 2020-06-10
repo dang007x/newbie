@@ -1,5 +1,4 @@
 package app.model;
-
 public class Node implements Comparable<Node>{
     private String label;
     private double x;
@@ -59,13 +58,14 @@ public class Node implements Comparable<Node>{
     }
 
     @Override
-    public int compareTo(Node n) {
-        if(n.getF() > this.getF()){
+    public int compareTo(Node o) {
+        if(o.getF() > this.getF()){
             return -1;
-        } else if(n.getF() < this.getF()){
+        }
+        else if(o.getF() < this.getF()){
             return 1;
         }
+        
         return 0;
     }
-
 }

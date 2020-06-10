@@ -25,6 +25,7 @@ public class Maze {
         this.matrix = new int[this.size][this.size];
         this.count = (this.size - 1) * (this.size - 1) / 4;
     }
+
     // Create maze and graph
     public void create() {
         // Set beginning
@@ -58,6 +59,66 @@ public class Maze {
 
     }
 
+    //Coding continues...
+    public ArrayList<Node> findPath() {
+        ArrayList<Node> path = new ArrayList<Node>();
+
+        ArrayList<Vertex<Node>> vertex = g.vertices();
+
+        double gx = 0; // the cost of the path from start to node n;
+
+        Node current = vertex.get(0).getElement();
+        Node prev = vertex.get(0).getElement();
+        Node start = vertex.get(0).getElement();
+
+        PriorityQueue<Node> pq = new PriorityQueue<Node>();
+
+        Node end = vertex.get(vertex.size() - 1).getElement();
+
+        while (!current.equals(end)) {
+            Vertex<Node> v = g.get(current);
+
+            System.out.println(v);
+
+            for (int i = 0; i < v.getAdjVertice().size(); i++) {
+                Node u = v.getAdjVertice().get(i).getElement();
+
+                double fx = evalWeight(current, u) + gx + eulerDistence(u, end);
+
+                u.setF(fx);
+
+                pq.add(u);
+            }
+            gx = gx + 2;
+            
+            path.add(current);
+            
+            prev = current;
+            current = pq.poll();
+
+            Vertex<Node> next = g.get(current);
+
+            if(next.getAdjVertice().size() > 1){
+            }
+            else if(next.getAdjVertice().size() == 1 && current == end){
+                path.add(end);
+            }
+            else {
+                g.remove(current);
+                
+                current = prev;
+                prev = start;
+                gx = gx - 2;
+            }
+            pq = new PriorityQueue<Node>();
+        }
+        return path;
+    }
+
+    public double eulerDistence(Node one, Node two) {
+        return Math.sqrt((Math.pow(two.getX() - one.getX(), 2) + Math.pow(two.getY() - one.getY(), 2)));
+    }
+
     // Evaluate distance betweent two nodes
     private double evalWeight(Node a, Node b) {
         if (a.getX() == b.getX()) {
@@ -83,6 +144,7 @@ public class Maze {
             System.out.println();
         }
     }
+
     // Create path and add nodes to graph
     private void createPath(int[] pos, Integer direction) {
         int i = pos[0], j = pos[1];
@@ -192,24 +254,24 @@ public class Maze {
         return matrix;
     }
     public static void main(String[] args) {
-        Maze m = new Maze(5);
+        Maze m = new Maze(10);
         // double s = System.currentTimeMillis();
         // System.out.println(m.count);
         m.create();
 
         // m.format();
         m.print();
-        System.out.println(m.g.adjVertices(new Vertex<Node>(new Node("5", 4, 3, 0))));
-        m.g.remove(new Node("5", 4, 3, 0));
-        ArrayList<Vertex<Node>> vertices = m.g.vertices();
-        for (int j = 0; j < vertices.size(); j++) {
-            System.out.println("Vertex: " + vertices.get(j).getElement().getX() + " "
-                    + vertices.get(j).getElement().getY() + "------");
-            for (int i = 0; i < vertices.get(j).getAdjVertice().size(); i++) {
-                System.out.println(vertices.get(j).getAdjVertice().get(i));
-            }
-        }
-        
+        // System.out.println(m.g.adjVertices(new Vertex<Node>(new Node("5", 4, 3, 0))));
+        // m.g.remove(new Node("5", 4, 3, 0));
+        // ArrayList<Vertex<Node>> vertices = m.g.vertices();
+        // for (int j = 0; j < vertices.size(); j++) {
+        //     System.out.println("Vertex: " + vertices.get(j).getElement().getX() + " "
+        //             + vertices.get(j).getElement().getY() + "------");
+        //     for (int i = 0; i < vertices.get(j).getAdjVertice().size(); i++) {
+        //         System.out.println(vertices.get(j).getAdjVertice().get(i));
+        //     }
+        // }
+
         // System.out.println(m.g.numEdge());
         // double e = System.currentTimeMillis();
         // System.out.println(e - s);
@@ -219,8 +281,12 @@ public class Maze {
         // pq.add(new Node("4", 1, 2, 012));
         // pq.add(new Node("5", 0, 2, 11));
         // System.out.println(pq.poll());
+        ArrayList<Node> node = new ArrayList<Node>();
+        node = m.findPath();
 
-
+        for(int i = 0; i < node.size(); i++){
+            System.out.println(node.get(i));
+        }
 
     }
 

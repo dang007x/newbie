@@ -30,7 +30,7 @@ public class Edge<E, V> {
         this.element = element;
     }
 
-    //dddd
+    // lalala
 
     @Override
     public String toString() {
