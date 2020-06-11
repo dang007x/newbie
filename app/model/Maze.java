@@ -32,7 +32,7 @@ public class Maze {
     // Create maze and graph
     public void create() {
         // Set beginning
-        matrix[0][1] = 3;
+        matrix[0][1] = 4;
         Node n = new Node(String.valueOf(index++), 0, 1, 0);
 
         // Add first node to graph
@@ -54,14 +54,14 @@ public class Maze {
             createPath(pos, direction.get(k));
         }
         // Set ending
-        matrix[size - 2][size - 1] = 3;
+        matrix[size - 2][size - 1] = 4;
         n = new Node(String.valueOf(index++), size - 1, size - 2, 0);
         m = new Node(String.valueOf(index), size - 2, size - 2, 0);
         g.addVertex(n);
         g.addEdge(g.get(n), g.get(m));
         removeInvalidNode();
 
-        //mark();
+        mark();
 
     }
 

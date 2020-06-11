@@ -29,8 +29,12 @@ public class MazePanel extends JPanel {
                 }
                 if (matrix[i][j] == 3) {
                     maze[i][j].setBackground(Color.GREEN);
-                } if(matrix[i][j] == 1){
+                }
+                if (matrix[i][j] == 1) {
                     p.setBackground(Color.WHITE);
+                }
+                if(matrix[i][j] == 4){
+                    p.setBackground(Color.RED);
                 }
             }
         }
@@ -48,6 +52,10 @@ public class MazePanel extends JPanel {
                 if (matrix[i][j] == 3) {
                     maze[i][j].setBackground(Color.GREEN);
                 }
+                if(matrix[i][j] == 4){
+                    maze[i][j].setBackground(Color.RED);
+                }
+                
             }
         }
     }
@@ -63,7 +71,7 @@ public class MazePanel extends JPanel {
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {
-                            
+
                             e.printStackTrace();
                         }
                     }
@@ -74,7 +82,7 @@ public class MazePanel extends JPanel {
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {
-                           
+
                             e.printStackTrace();
                         }
                     }
@@ -94,34 +102,32 @@ public class MazePanel extends JPanel {
                     int i = y1;
                     while (i < y2) {
                         maze[i + 1][x1].setBackground(Color.GREEN);
-                       
+
                         maze[i][x1].setBackground(Color.WHITE);
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {
-                            
+
                             e.printStackTrace();
                         }
                         i++;
 
-                        
                     }
                 }
                 if (y1 == y2) {
                     int i = x1;
                     while (i < x2) {
                         maze[y1][i + 1].setBackground(Color.GREEN);
-                        
+
                         maze[y1][i].setBackground(Color.WHITE);
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {
-                            
+
                             e.printStackTrace();
                         }
                         i++;
 
-                       
                     }
                 }
             }

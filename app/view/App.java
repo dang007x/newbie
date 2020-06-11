@@ -1,7 +1,8 @@
 package app.view;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -21,9 +22,8 @@ public class App extends JFrame {
     private JButton newGameButton;
     private JButton tutorial;
     private MazePanel mazePanel;
-    private int mazeSize = 20;
+    private int mazeSize = 15;
     private Maze maze = new Maze(mazeSize);
-    private JPanel mainPanel;
 
     public App() {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -71,16 +71,14 @@ public class App extends JFrame {
         buttonPanel.add(newGameButton);
         buttonPanel.add(tutorial);
 
-        mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
-        mainPanel.setBounds(0, 50, 700, 620);
 
         maze.create();
         mazePanel = new MazePanel(maze.getMatrix());
+        mazePanel.setBounds(0, 50, 700, 620);
        
-        mainPanel.add(mazePanel, BorderLayout.CENTER);
         
-        this.add(mainPanel);
+        
+        this.add(mazePanel);
         this.add(buttonPanel);
     }
     
