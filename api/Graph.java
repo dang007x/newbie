@@ -67,6 +67,7 @@ public class Graph<E, V> {
         for (int i = 0; i < v.getAdjVertice().size(); i++) {
             if(v.getAdjVertice().get(i).getAdjVertice().contains(v)){
                 v.getAdjVertice().get(i).getAdjVertice().remove(v);
+                numEdge--;
             }
         }
         return v;

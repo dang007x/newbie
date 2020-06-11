@@ -25,6 +25,9 @@ public class Maze {
         }
         this.matrix = new int[this.size][this.size];
         this.count = (this.size - 1) * (this.size - 1) / 4;
+        this.pos = new int[2];
+        pos[0] = 1;
+        pos[1] = 1;
     }
 
     // Create maze and graph
@@ -57,62 +60,119 @@ public class Maze {
         m = new Node(String.valueOf(index), size - 2, size - 2, 0);
         g.addVertex(n);
         g.addEdge(g.get(n), g.get(m));
+        removeInvalidNode();
 
+        // mark();
+
+    }
+
+    public void removeInvalidNode() {
+        ArrayList<Vertex<Node>> vertices = g.vertices();
+        int i = 1;
+        while (i < vertices.size() - 2) {
+            Vertex<Node> v = vertices.get(i);
+            if (v.getElement().equals(new Node("1", 1, 1, 0))
+                    || (v.getElement().equals(new Node("1", size - 2, size - 2, 0)))) {
+                i++;
+
+            } else {
+                if (v.getAdjVertice().size() == 2) {
+                    double[] pos1 = { v.getElement().getX(), v.getElement().getY() };
+                    double[] pos2 = { v.getAdjVertice().get(0).getElement().getX(),
+                            v.getAdjVertice().get(0).getElement().getY() };
+                    double[] pos3 = { v.getAdjVertice().get(1).getElement().getX(),
+                            v.getAdjVertice().get(1).getElement().getY() };
+                    if ((pos1[0] == pos2[0] && pos2[0] == pos3[0]) || (pos1[1] == pos2[1] && pos2[1] == pos3[1])) {
+                        g.addEdge(v.getAdjVertice().get(0), v.getAdjVertice().get(1));
+                        g.remove(v.getElement());
+                        continue;
+                    }
+                }
+                i++;
+            }
+        }
     }
 
     // Coding continues...
     public ArrayList<Node> findPath() {
-        ArrayList<Node> path = new ArrayList<Node>();
-
         ArrayList<Vertex<Node>> vertex = g.vertices();
 
-        double gx = 0; // the cost of the path from start to node n;
-        //int INF = 100000000;
-
-        Node current = vertex.get(0).getElement();
-        // Node prev = vertex.get(0).getElement();
-        // Node start = vertex.get(0).getElement();
-
-        PriorityQueue<Node> pq = new PriorityQueue<Node>();
-
+        Node start = vertex.get(0).getElement();
         Node end = vertex.get(vertex.size() - 1).getElement();
 
-        while (!current.equals(end)) {
-            Vertex<Node> v = g.get(current);
-            System.out.println(v);
+        PriorityQueue<Node> open = new PriorityQueue<Node>();
+        //ArrayList<Node> open = new ArrayList<Node>();
+        ArrayList<Node> close = new ArrayList<Node>();
 
-            for (int i = 0; i < v.getAdjVertice().size(); i++) {
-                Node u = v.getAdjVertice().get(i).getElement();
+        double sumCost = 0;
 
-                gx = evalWeight(current, u);
-                double fx = gx + euclidDistence(u, end);
+        open.add(start);
+        start.setH(euclidDistence(start, end));
+        start.setF(start.getH());
+        start.setG(0);
+        while (!open.isEmpty()) {
+            // Node current = open.poll();
 
-                if(v.getAdjVertice().get(i).getAdjVertice().size() <= 1 && !u.equals(end)) {
-                    g.remove(u);
+            // current.setG(evalWeight(start, current));
+            // double gx = current.getG();
+            // double current_fx = gx + sumCost + euclidDistence(current, end);
+            Node current = start;
+            Node min = new Node("label", 0, 0, 100000);
+            for(Node i : open){
+                double gx = evalWeight(i, current) + sumCost;
+                double hx = euclidDistence(i, end);
+                double fx = gx + hx;
+                i.setG(gx);
+                i.setH(hx);
+                i.setF(fx);
+                
+                if(i.getF() < min.getF()){
+                    min = i;
+                }
+            }
+            current = min;
+            double current_fx = current.getF();
+            current.setF(current_fx);
+
+            if(current.equals(end)){
+                break;
+            } 
+
+            close.add(current);
+            open.remove(current);
+
+            Vertex<Node> neighbors = g.get(current);
+            for(int i = 0; i < neighbors.getAdjVertice().size(); i++){
+                Node u = neighbors.getAdjVertice().get(i).getElement();
+                //u.setG(gx);
+                double i_cost = current.getG() + evalWeight(u, current);
+                if(open.contains(u)) {
+                    if(u.getG() <= i_cost){
+                        continue;
+                    }
+                }
+                else if(close.contains(u)){
+                    if(u.getG() <= i_cost){
+                        continue;
+                    }
+                    open.add(u);
+                    close.remove(u);
                 }
                 else {
-                    u.setF(fx);
-                    pq.add(u);
+                    open.add(u);
+                    u.setH(euclidDistence(u, end));
                 }
-                
+                u.setG(i_cost);
+                current = u;
+
+                sumCost += evalWeight(current, u);
             }
-
-            // for(Node i : pq) {
-            //     if(i.equals(prev)){
-            //         pq.remove(i);
-            //     }
-            // }
-
-            path.add(current);
-
-            // prev = current;
-            current = pq.poll();
-
-            pq = new PriorityQueue<Node>();
+            close.add(current);
         }
-        //path.add(end);
-        return path;
+        return close;
     }
+
+    // path.add(end);
 
     public double euclidDistence(Node one, Node two) {
         return Math.sqrt((Math.pow(two.getX() - one.getX(), 2) + Math.pow(two.getY() - one.getY(), 2)));
@@ -144,16 +204,16 @@ public class Maze {
         }
     }
 
-    public void writer(){
+    public void writer() {
         try {
             FileWriter write = new FileWriter("maze.txt");
-            for(int i = 0; i < matrix.length; i++){
-                for(int j = 0; j < matrix.length; j++){
+            for (int i = 0; i < matrix.length; i++) {
+                for (int j = 0; j < matrix.length; j++) {
                     write.write(matrix[i][j] + " ");
                 }
                 write.write("\n");
             }
-            
+
             write.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -265,8 +325,22 @@ public class Maze {
         return dir;
     }
 
+    public int[][] getMatrix() {
+        return matrix;
+    }
+
+    private void mark() {
+        ArrayList<Vertex<Node>> vertices = g.vertices();
+        for (int i = 1; i < vertices.size() - 1; i++) {
+            int row = (int) vertices.get(i).getElement().getY();
+            int col = (int) vertices.get(i).getElement().getX();
+            // System.out.println(row + " " + col);
+            matrix[row][col] = 3;
+        }
+    }
+
     public static void main(String[] args) {
-        Maze m = new Maze(5);
+        Maze m = new Maze(15);
         // double s = System.currentTimeMillis();
         // System.out.println(m.count);
         m.create();
@@ -285,6 +359,20 @@ public class Maze {
         // System.out.println(vertices.get(j).getAdjVertice().get(i));
         // }
         // }
+        // =======
+        // System.out.println(m.g.numEdge());
+        // // System.out.println(m.g.adjVertices(new Vertex<Node>(new Node("5", 4, 3,
+        // // 0))));
+        // // m.g.remove(new Node("5", 4, 3, 0));
+        // ArrayList<Vertex<Node>> vertices = m.g.vertices();
+        // for (int j = 0; j < vertices.size(); j++) {
+        // System.out.println("Vertex: " + vertices.get(j).getElement().getX() + " "
+        // + vertices.get(j).getElement().getY() + "------");
+        // for (int i = 0; i < vertices.get(j).getAdjVertice().size(); i++) {
+        // System.out.println(vertices.get(j).getAdjVertice().get(i));
+        // }
+        // }
+        // >>>>>>> d40d4465532d6e742097b507cbd3790095519704
 
         // System.out.println(m.g.numEdge());
         // double e = System.currentTimeMillis();

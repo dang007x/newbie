@@ -4,6 +4,8 @@ public class Node implements Comparable<Node>{
     private double x;
     private double y;
     private double f;
+    private double g;
+    private double h;
 
     public Node(String label, double x, double y, double f) {
         this.label = label;
@@ -42,6 +44,22 @@ public class Node implements Comparable<Node>{
 
     public void setF(double f) {
         this.f = f;
+    }
+
+    public double getG(){
+        return g;
+    }
+
+    public void setG(double g){
+        this.g = g;
+    }
+
+    public double getH(){
+        return h;
+    }
+
+    public void setH(double h){
+        this.h = h;
     }
 
     @Override
