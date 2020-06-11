@@ -24,6 +24,9 @@ public class Maze {
         }
         this.matrix = new int[this.size][this.size];
         this.count = (this.size - 1) * (this.size - 1) / 4;
+        this.pos = new int [2];
+        pos[0] = 1;
+        pos[1] = 1;
     }
 
     // Create maze and graph
@@ -56,10 +59,40 @@ public class Maze {
         m = new Node(String.valueOf(index), size - 2, size - 2, 0);
         g.addVertex(n);
         g.addEdge(g.get(n), g.get(m));
+        removeInvalidNode();
+
+        //mark();
 
     }
 
-    //Coding continues...
+    public void removeInvalidNode() {
+        ArrayList<Vertex<Node>> vertices = g.vertices();
+        int i = 1;
+        while(i < vertices.size() - 2){
+            Vertex<Node> v = vertices.get(i);
+            if (v.getElement().equals(new Node("1", 1, 1, 0))
+                    || (v.getElement().equals(new Node("1", size - 2, size - 2, 0)))) {
+                        i++;
+
+            } else {
+                if (v.getAdjVertice().size() == 2) {
+                    double[] pos1 = { v.getElement().getX(), v.getElement().getY() };
+                    double[] pos2 = { v.getAdjVertice().get(0).getElement().getX(),
+                            v.getAdjVertice().get(0).getElement().getY() };
+                    double[] pos3 = { v.getAdjVertice().get(1).getElement().getX(),
+                            v.getAdjVertice().get(1).getElement().getY() };
+                    if ((pos1[0] == pos2[0] && pos2[0] == pos3[0]) || (pos1[1] == pos2[1] && pos2[1] == pos3[1])) {
+                        g.addEdge(v.getAdjVertice().get(0), v.getAdjVertice().get(1));
+                        g.remove(v.getElement());
+                        continue;
+                    }
+                }
+                i++;
+            }
+        }
+    }
+
+    // Coding continues...
     public ArrayList<Node> findPath() {
         ArrayList<Node> path = new ArrayList<Node>();
 
@@ -90,22 +123,20 @@ public class Maze {
                 pq.add(u);
             }
             gx = gx + 2;
-            
+
             path.add(current);
-            
+
             prev = current;
             current = pq.poll();
 
             Vertex<Node> next = g.get(current);
 
-            if(next.getAdjVertice().size() > 1){
-            }
-            else if(next.getAdjVertice().size() == 1 && current == end){
+            if (next.getAdjVertice().size() > 1) {
+            } else if (next.getAdjVertice().size() == 1 && current == end) {
                 path.add(end);
-            }
-            else {
+            } else {
                 g.remove(current);
-                
+
                 current = prev;
                 prev = start;
                 gx = gx - 2;
@@ -253,6 +284,17 @@ public class Maze {
     public int[][] getMatrix() {
         return matrix;
     }
+
+    private void mark(){
+        ArrayList<Vertex<Node>> vertices = g.vertices();
+        for (int i = 1; i < vertices.size() - 1; i++) {
+            int row = (int) vertices.get(i).getElement().getY();
+            int col = (int) vertices.get(i).getElement().getX();
+            // System.out.println(row + " " + col);
+            matrix[row][col] = 3;
+        }
+    }
+
     public static void main(String[] args) {
         Maze m = new Maze(10);
         // double s = System.currentTimeMillis();
@@ -261,16 +303,18 @@ public class Maze {
 
         // m.format();
         m.print();
-        // System.out.println(m.g.adjVertices(new Vertex<Node>(new Node("5", 4, 3, 0))));
+        System.out.println(m.g.numEdge());
+        // System.out.println(m.g.adjVertices(new Vertex<Node>(new Node("5", 4, 3,
+        // 0))));
         // m.g.remove(new Node("5", 4, 3, 0));
-        // ArrayList<Vertex<Node>> vertices = m.g.vertices();
-        // for (int j = 0; j < vertices.size(); j++) {
-        //     System.out.println("Vertex: " + vertices.get(j).getElement().getX() + " "
-        //             + vertices.get(j).getElement().getY() + "------");
-        //     for (int i = 0; i < vertices.get(j).getAdjVertice().size(); i++) {
-        //         System.out.println(vertices.get(j).getAdjVertice().get(i));
-        //     }
-        // }
+        ArrayList<Vertex<Node>> vertices = m.g.vertices();
+        for (int j = 0; j < vertices.size(); j++) {
+            System.out.println("Vertex: " + vertices.get(j).getElement().getX() + " "
+                    + vertices.get(j).getElement().getY() + "------");
+            for (int i = 0; i < vertices.get(j).getAdjVertice().size(); i++) {
+                System.out.println(vertices.get(j).getAdjVertice().get(i));
+            }
+        }
 
         // System.out.println(m.g.numEdge());
         // double e = System.currentTimeMillis();
@@ -281,12 +325,12 @@ public class Maze {
         // pq.add(new Node("4", 1, 2, 012));
         // pq.add(new Node("5", 0, 2, 11));
         // System.out.println(pq.poll());
-        ArrayList<Node> node = new ArrayList<Node>();
-        node = m.findPath();
+        // ArrayList<Node> node = new ArrayList<Node>();
+        // node = m.findPath();
 
-        for(int i = 0; i < node.size(); i++){
-            System.out.println(node.get(i));
-        }
+        // for (int i = 0; i < node.size(); i++) {
+        // System.out.println(node.get(i));
+        // }
 
     }
 
