@@ -2,8 +2,11 @@ package app.model;
 
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.PriorityQueue;
 import java.util.Random;
+import java.util.Stack;
 
 import api.Graph;
 import api.Vertex;
@@ -34,7 +37,7 @@ public class Maze {
     public void create() {
         // Set beginning
         matrix[0][1] = 3;
-        Node n = new Node(String.valueOf(index++), 0, 1, 0);
+        Node n = new Node(String.valueOf(index++), 1, 0, 0);
 
         // Add first node to graph
         matrix[pos[0]][pos[1]] = 1;
@@ -99,10 +102,11 @@ public class Maze {
 
         Node start = vertex.get(0).getElement();
         Node end = vertex.get(vertex.size() - 1).getElement();
+        Node current = start;
 
-        PriorityQueue<Node> open = new PriorityQueue<Node>();
-        //ArrayList<Node> open = new ArrayList<Node>();
+        ArrayList<Node> open = new ArrayList<Node>();
         ArrayList<Node> close = new ArrayList<Node>();
+        ArrayList<Node> path = new ArrayList<Node>();
 
         double sumCost = 0;
 
@@ -110,23 +114,19 @@ public class Maze {
         start.setH(euclidDistence(start, end));
         start.setF(start.getH());
         start.setG(0);
-        while (!open.isEmpty()) {
-            // Node current = open.poll();
+        current.setParent(start);
 
-            // current.setG(evalWeight(start, current));
-            // double gx = current.getG();
-            // double current_fx = gx + sumCost + euclidDistence(current, end);
-            Node current = start;
+        while (!open.isEmpty()) {
             Node min = new Node("label", 0, 0, 100000);
-            for(Node i : open){
+            for (Node i : open) {
                 double gx = evalWeight(i, current) + sumCost;
                 double hx = euclidDistence(i, end);
                 double fx = gx + hx;
                 i.setG(gx);
                 i.setH(hx);
                 i.setF(fx);
-                
-                if(i.getF() < min.getF()){
+
+                if (i.getF() < min.getF()) {
                     min = i;
                 }
             }
@@ -134,45 +134,54 @@ public class Maze {
             double current_fx = current.getF();
             current.setF(current_fx);
 
-            if(current.equals(end)){
+            if (current.equals(end)) {
                 break;
-            } 
+            }
 
-            close.add(current);
             open.remove(current);
 
             Vertex<Node> neighbors = g.get(current);
-            for(int i = 0; i < neighbors.getAdjVertice().size(); i++){
+            for (int i = 0; i < neighbors.getAdjVertice().size(); i++) {
                 Node u = neighbors.getAdjVertice().get(i).getElement();
-                //u.setG(gx);
+                
+                u.setG(current.getF() - euclidDistence(u, end) + evalWeight(current, u));
+                u.setF(u.getG() + euclidDistence(u, end));
                 double i_cost = current.getG() + evalWeight(u, current);
-                if(open.contains(u)) {
-                    if(u.getG() <= i_cost){
+                if (open.contains(u)) {
+                    if (u.getG() <= i_cost) {
                         continue;
                     }
-                }
-                else if(close.contains(u)){
-                    if(u.getG() <= i_cost){
+                } else if (close.contains(u)) {
+                    if (u.getG() <= i_cost) {
                         continue;
                     }
                     open.add(u);
                     close.remove(u);
-                }
-                else {
+                    
+                } else {
                     open.add(u);
                     u.setH(euclidDistence(u, end));
+                    u.setG(i_cost);
+                    u.setF(u.getG() + u.getH());
+                    u.setParent(current);
                 }
-                u.setG(i_cost);
-                current = u;
 
                 sumCost += evalWeight(current, u);
+
             }
             close.add(current);
         }
-        return close;
-    }
 
-    // path.add(end);
+        Node run = end;
+        while (!run.equals(start)) {
+            path.add(run.getParent());
+            run = run.getParent();
+        }
+
+        Collections.reverse(path);
+
+        return path;
+    }
 
     public double euclidDistence(Node one, Node two) {
         return Math.sqrt((Math.pow(two.getX() - one.getX(), 2) + Math.pow(two.getY() - one.getY(), 2)));
@@ -329,7 +338,7 @@ public class Maze {
         return matrix;
     }
 
-    private void mark() {
+    public void mark() {
         ArrayList<Vertex<Node>> vertices = g.vertices();
         for (int i = 1; i < vertices.size() - 1; i++) {
             int row = (int) vertices.get(i).getElement().getY();

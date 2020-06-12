@@ -6,6 +6,7 @@ public class Node implements Comparable<Node>{
     private double f;
     private double g;
     private double h;
+    private Node parent;
 
     public Node(String label, double x, double y, double f) {
         this.label = label;
@@ -60,6 +61,14 @@ public class Node implements Comparable<Node>{
 
     public void setH(double h){
         this.h = h;
+    }
+
+    public void setParent(Node parent){
+        this.parent = parent;
+    }
+
+    public Node getParent(){
+        return parent;
     }
 
     @Override

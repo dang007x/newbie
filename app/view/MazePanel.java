@@ -2,8 +2,11 @@ package app.view;
 
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
+
+import app.model.Node;
 
 public class MazePanel extends JPanel {
 
@@ -11,7 +14,7 @@ public class MazePanel extends JPanel {
      *
      */
     private static final long serialVersionUID = 1L;
-    private int timeSleep = 1000;
+    private int timeSleep = 500;
     private JPanel[][] maze;
 
     public MazePanel(int matrix[][]) {
@@ -29,7 +32,8 @@ public class MazePanel extends JPanel {
                 }
                 if (matrix[i][j] == 3) {
                     maze[i][j].setBackground(Color.GREEN);
-                } if(matrix[i][j] == 1){
+                }
+                if (matrix[i][j] == 1) {
                     p.setBackground(Color.WHITE);
                 }
             }
@@ -52,30 +56,36 @@ public class MazePanel extends JPanel {
         }
     }
 
-    public void move(int x1, int y1, int x2, int y2) {
+    public void move(ArrayList<Node> path) {
         new Thread(new Runnable() {
 
             @Override
             public void run() {
-                if (x1 == x2) {
-                    for (int i = 0; i < y2 - y1; i++) {
-                        maze[y1 + i][x1].setBackground(Color.GREEN);
-                        try {
-                            Thread.sleep(timeSleep);
-                        } catch (InterruptedException e) {
-                            
-                            e.printStackTrace();
+                for (int i = 0; i < path.size() - 1; i++) {
+                    int x1 = (int) path.get(i).getX();
+                    int x2 = (int) path.get(i + 1).getX();
+                    int y1 = (int) path.get(i).getY();
+                    int y2 = (int) path.get(i + 1).getY();
+                    if (x1 == x2) {
+                        for (int j = 0; j <= y2 - y1; j++) {
+                            maze[y1 + j][x1].setBackground(Color.GREEN);
+                            try {
+                                Thread.sleep(timeSleep);
+                            } catch (InterruptedException e) {
+
+                                e.printStackTrace();
+                            }
                         }
                     }
-                }
-                if (y1 == y2) {
-                    for (int i = 0; i < x2 - x1; i++) {
-                        maze[y1][x1 + i].setBackground(Color.GREEN);
-                        try {
-                            Thread.sleep(timeSleep);
-                        } catch (InterruptedException e) {
-                           
-                            e.printStackTrace();
+                    if (y1 == y2) {
+                        for (int j = 0; j <= x2 - x1; j++) {
+                            maze[y1][x1 + j].setBackground(Color.GREEN);
+                            try {
+                                Thread.sleep(timeSleep);
+                            } catch (InterruptedException e) {
+
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -94,34 +104,32 @@ public class MazePanel extends JPanel {
                     int i = y1;
                     while (i < y2) {
                         maze[i + 1][x1].setBackground(Color.GREEN);
-                       
+
                         maze[i][x1].setBackground(Color.WHITE);
                         try {
                             Thread.sleep(timeSleep);
                         } catch (InterruptedException e) {
-                            
+
                             e.printStackTrace();
                         }
                         i++;
 
-                        
                     }
                 }
                 if (y1 == y2) {
                     int i = x1;
                     while (i < x2) {
                         maze[y1][i + 1].setBackground(Color.GREEN);
-                        
+
                         maze[y1][i].setBackground(Color.WHITE);
                         try {
                             Thread.sleep(timeSleep);
                         } catch (InterruptedException e) {
-                            
+
                             e.printStackTrace();
                         }
                         i++;
 
-                       
                     }
                 }
             }

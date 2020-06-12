@@ -23,7 +23,7 @@ public class App extends JFrame {
     private JButton newGameButton;
     private JButton tutorial;
     private MazePanel mazePanel;
-    private int mazeSize = 10;
+    private int mazeSize = 15;
     private Maze maze = new Maze(mazeSize);
     private JPanel mainPanel;
 
@@ -43,13 +43,12 @@ public class App extends JFrame {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 ArrayList<Node> path = maze.findPath();
-                for (int i = 0; i < path.size() - 1; i++) {
-                    int x1 = (int) path.get(i).getX();
-                    int x2 = (int) path.get(i + 1).getX();
-                    int y1 = (int) path.get(i).getY();
-                    int y2 = (int) path.get(i + 1).getY();
-                    mazePanel.move(x1, y1, x2, y2);
+                for (int i = 0; i < path.size(); i++) {
+                    System.out.println(path.get(i));
                 }
+                mazePanel.move(path);
+                
+
 
                 System.out.println("Clicked Play");
 
