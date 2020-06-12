@@ -4,6 +4,9 @@ public class Node implements Comparable<Node>{
     private double x;
     private double y;
     private double f;
+    private double g;
+    private double h;
+    private Node parent;
 
     public Node(String label, double x, double y, double f) {
         this.label = label;
@@ -44,6 +47,22 @@ public class Node implements Comparable<Node>{
         this.f = f;
     }
 
+    public double getG(){
+        return g;
+    }
+
+    public void setG(double g){
+        this.g = g;
+    }
+
+    public double getH(){
+        return h;
+    }
+
+    public void setH(double h){
+        this.h = h;
+    }
+
     @Override
     public boolean equals(Object object) {
         Node other = (Node) object;
@@ -68,4 +87,12 @@ public class Node implements Comparable<Node>{
         
         return 0;
     }
+
+	public void setParent(Node current) {
+        this.parent = current;
+	}
+
+	public Node getParent() {
+		return this.parent;
+	}
 }

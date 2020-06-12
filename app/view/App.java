@@ -1,14 +1,15 @@
 package app.view;
 
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import app.model.Maze;
+import app.model.Node;
 
 public class App extends JFrame {
 
@@ -22,7 +23,8 @@ public class App extends JFrame {
     private JButton newGameButton;
     private JButton tutorial;
     private MazePanel mazePanel;
-    private int mazeSize = 15;
+
+    private int mazeSize = 25;
     private Maze maze = new Maze(mazeSize);
 
     public App() {
@@ -40,10 +42,16 @@ public class App extends JFrame {
         playButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-               
-                mazePanel.move(1, 0, 1, 5);
-                System.out.println("Clicked Play");
+                ArrayList<Node> path = maze.findPath();
+                for (int i = 0; i < path.size(); i++) {
+                    System.out.println(path.get(i));
+                }
+                mazePanel.move(path);
                 
+
+
+                System.out.println("Clicked Play");
+
             }
 
         });
@@ -59,7 +67,7 @@ public class App extends JFrame {
                 maze.create();
                 mazePanel.reload(maze.getMatrix());
                 System.out.println("Clicked New Game");
-                
+
             }
 
         });
@@ -71,15 +79,13 @@ public class App extends JFrame {
         buttonPanel.add(newGameButton);
         buttonPanel.add(tutorial);
 
-
         maze.create();
         mazePanel = new MazePanel(maze.getMatrix());
+
         mazePanel.setBounds(0, 50, 700, 620);
-       
-        
-        
+
         this.add(mazePanel);
         this.add(buttonPanel);
     }
-    
+
 }
