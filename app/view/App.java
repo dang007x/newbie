@@ -25,7 +25,7 @@ public class App extends JFrame {
     private JButton tutorial;
     private MazePanel mazePanel;
 
-    private int mazeSize = 100;
+    private int mazeSize = 200;
     
     private Maze maze = new Maze(mazeSize);
     private Color buttonColor = new Color(19, 15, 64);

@@ -3,7 +3,6 @@ package app.model;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.PriorityQueue;
 import java.util.Random;
 
 import api.Graph;
@@ -17,7 +16,7 @@ public class Maze {
     private Graph<Double, Node> g = new Graph<>();
     private Vertex<Node> v;
     private int index = 0;
-    private Node end;
+    //private Node end;
 
     public Maze(int size) {
         if (size % 2 == 0) {
