@@ -14,8 +14,13 @@ public class MazePanel extends JPanel {
      *
      */
     private static final long serialVersionUID = 1L;
-    private int timeSleep = 500;
+    private int timeSleep = 25;
     private JPanel[][] maze;
+
+    private Color pathColor = new Color(232, 65, 24);
+    private Color emptyPath = new Color(247, 241, 227);
+    private Color wall = new Color(39, 60, 117);
+    private Color end = new Color(247, 143, 179);
 
     public MazePanel(int matrix[][]) {
         maze = new JPanel[matrix.length][matrix.length];
@@ -26,15 +31,16 @@ public class MazePanel extends JPanel {
                 maze[i][j] = p;
                 this.add(p);
                 if (matrix[i][j] == 0) {
-
-                    p.setBackground(Color.BLACK);
-
+                    p.setBackground(wall);
                 }
                 if (matrix[i][j] == 3) {
-                    maze[i][j].setBackground(Color.GREEN);
+                    maze[i][j].setBackground(pathColor);
                 }
                 if (matrix[i][j] == 1) {
-                    p.setBackground(Color.WHITE);
+                    p.setBackground(emptyPath);
+                }
+                if (matrix[i][j] == 4) {
+                    p.setBackground(end);
                 }
             }
         }
@@ -43,14 +49,15 @@ public class MazePanel extends JPanel {
     public void reload(int[][] matrix) {
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix.length; j++) {
-                maze[i][j].setBackground(Color.white);
+                maze[i][j].setBackground(emptyPath);
                 if (matrix[i][j] == 0) {
-
-                    maze[i][j].setBackground(Color.BLACK);
-
+                    maze[i][j].setBackground(wall);
                 }
                 if (matrix[i][j] == 3) {
-                    maze[i][j].setBackground(Color.GREEN);
+                    maze[i][j].setBackground(pathColor);
+                }
+                if (matrix[i][j] == 4) {
+                    maze[i][j].setBackground(end);
                 }
             }
         }
@@ -62,13 +69,13 @@ public class MazePanel extends JPanel {
             @Override
             public void run() {
                 for (int i = 0; i < path.size() - 1; i++) {
-                    int x1 = (int) path.get(i).getX();
-                    int x2 = (int) path.get(i + 1).getX();
-                    int y1 = (int) path.get(i).getY();
-                    int y2 = (int) path.get(i + 1).getY();
-                    if (x1 == x2) {
-                        for (int j = 0; j <= y2 - y1; j++) {
-                            maze[y1 + j][x1].setBackground(Color.GREEN);
+                    int row1 = (int) path.get(i).getY();
+                    int row2 = (int) path.get(i + 1).getY();
+                    int col1 = (int) path.get(i).getX();
+                    int col2 = (int) path.get(i + 1).getX();
+                    if (row1 == row2) {
+                        for (int j = 0; j <= Math.max(col1, col2) - Math.min(col1, col2); j++) {
+                            maze[row1][Math.min(col1, col2) + j].setBackground(pathColor);
                             try {
                                 Thread.sleep(timeSleep);
                             } catch (InterruptedException e) {
@@ -77,9 +84,9 @@ public class MazePanel extends JPanel {
                             }
                         }
                     }
-                    if (y1 == y2) {
-                        for (int j = 0; j <= x2 - x1; j++) {
-                            maze[y1][x1 + j].setBackground(Color.GREEN);
+                    if (col1 == col2) {
+                        for (int j = 0; j <= Math.max(row1, row2) - Math.min(row1, row2); j++) {
+                            maze[Math.min(row1, row2) + j][col1].setBackground(pathColor);
                             try {
                                 Thread.sleep(timeSleep);
                             } catch (InterruptedException e) {
@@ -103,9 +110,9 @@ public class MazePanel extends JPanel {
                 if (x1 == x2) {
                     int i = y1;
                     while (i < y2) {
-                        maze[i + 1][x1].setBackground(Color.GREEN);
+                        maze[i + 1][x1].setBackground(new Color(46, 139, 87));
 
-                        maze[i][x1].setBackground(Color.WHITE);
+                        maze[i][x1].setBackground(emptyPath);
                         try {
                             Thread.sleep(timeSleep);
                         } catch (InterruptedException e) {
@@ -119,9 +126,9 @@ public class MazePanel extends JPanel {
                 if (y1 == y2) {
                     int i = x1;
                     while (i < x2) {
-                        maze[y1][i + 1].setBackground(Color.GREEN);
+                        maze[y1][i + 1].setBackground(new Color(46, 139, 87));
 
-                        maze[y1][i].setBackground(Color.WHITE);
+                        maze[y1][i].setBackground(emptyPath);
                         try {
                             Thread.sleep(timeSleep);
                         } catch (InterruptedException e) {

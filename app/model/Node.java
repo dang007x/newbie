@@ -63,14 +63,6 @@ public class Node implements Comparable<Node>{
         this.h = h;
     }
 
-    public void setParent(Node parent){
-        this.parent = parent;
-    }
-
-    public Node getParent(){
-        return parent;
-    }
-
     @Override
     public boolean equals(Object object) {
         Node other = (Node) object;
@@ -95,4 +87,12 @@ public class Node implements Comparable<Node>{
         
         return 0;
     }
+
+	public void setParent(Node current) {
+        this.parent = current;
+	}
+
+	public Node getParent() {
+		return this.parent;
+	}
 }

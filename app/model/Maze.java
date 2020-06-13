@@ -2,11 +2,9 @@ package app.model;
 
 import java.io.FileWriter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.PriorityQueue;
 import java.util.Random;
-import java.util.Stack;
 
 import api.Graph;
 import api.Vertex;
@@ -14,11 +12,12 @@ import api.Vertex;
 public class Maze {
     private int[][] matrix;
     private int size;
-    private int count;
+    private int count = 0;
     private int[] pos = { 1, 1 };
     private Graph<Double, Node> g = new Graph<>();
     private Vertex<Node> v;
     private int index = 0;
+    private Node end;
 
     public Maze(int size) {
         if (size % 2 == 0) {
@@ -36,7 +35,9 @@ public class Maze {
     // Create maze and graph
     public void create() {
         // Set beginning
-        matrix[0][1] = 3;
+
+        matrix[0][1] = 4;
+
         Node n = new Node(String.valueOf(index++), 1, 0, 0);
 
         // Add first node to graph
@@ -58,7 +59,7 @@ public class Maze {
             createPath(pos, direction.get(k));
         }
         // Set ending
-        matrix[size - 2][size - 1] = 3;
+        matrix[size - 2][size - 1] = 4;
         n = new Node(String.valueOf(index++), size - 1, size - 2, 0);
         m = new Node(String.valueOf(index), size - 2, size - 2, 0);
         g.addVertex(n);
@@ -130,6 +131,7 @@ public class Maze {
                     min = i;
                 }
             }
+
             current = min;
             double current_fx = current.getF();
             current.setF(current_fx);
@@ -143,12 +145,12 @@ public class Maze {
             Vertex<Node> neighbors = g.get(current);
             for (int i = 0; i < neighbors.getAdjVertice().size(); i++) {
                 Node u = neighbors.getAdjVertice().get(i).getElement();
-                
+
                 u.setG(current.getF() - euclidDistence(u, end) + evalWeight(current, u));
                 u.setF(u.getG() + euclidDistence(u, end));
                 double i_cost = current.getG() + evalWeight(u, current);
                 if (open.contains(u)) {
-                    if (u.getG() <= i_cost) {
+                    if(u.getG() <= i_cost){
                         continue;
                     }
                 } else if (close.contains(u)) {
@@ -157,7 +159,7 @@ public class Maze {
                     }
                     open.add(u);
                     close.remove(u);
-                    
+
                 } else {
                     open.add(u);
                     u.setH(euclidDistence(u, end));
@@ -165,9 +167,7 @@ public class Maze {
                     u.setF(u.getG() + u.getH());
                     u.setParent(current);
                 }
-
                 sumCost += evalWeight(current, u);
-
             }
             close.add(current);
         }
@@ -177,11 +177,57 @@ public class Maze {
             path.add(run.getParent());
             run = run.getParent();
         }
-
         Collections.reverse(path);
 
         return path;
     }
+
+    // public double getCost(ArrayList<Node> close, Node n) {
+
+    //     for (int i = 0; i < close.size(); i++) {
+    //         if (close.get(i).equals(n)) {
+    //             return close.get(i).getF() - euclidDistence(n, end);
+    //         }
+    //     }
+    //     return 0;
+    // }
+
+    // public ArrayList<Node> findPathv2() {
+    //     ArrayList<Node> path = new ArrayList<>();
+    //     ArrayList<Node> close = new ArrayList<>();
+    //     Node start = g.vertices().get(0).getElement();
+    //     Node end = g.vertices().get(g.size() - 1).getElement();
+    //     start.setF(euclidDistence(start, end));
+
+    //     PriorityQueue<Node> pq = new PriorityQueue<>();
+
+    //     pq.add(start);
+    //     while (!pq.isEmpty()) {
+    //         Node current = pq.poll();
+    //         if (current.equals(end)) { // reach end
+    //             close.add(current);
+    //             break;
+    //         }
+    //         close.add(current);
+    //         ArrayList<Vertex<Node>> successors = g.get(current).getAdjVertice();
+    //         for (int i = 0; i < successors.size(); i++) {
+    //             double g = current.getF() - euclidDistence(current, end)
+    //                     + evalWeight(successors.get(i).getElement(), current);
+    //             double h = euclidDistence(successors.get(i).getElement(), end);
+    //             successors.get(i).getElement().setF(g + h);
+
+    //             if (!close.contains(successors.get(i).getElement())
+    //                     || g < getCost(close, successors.get(i).getElement())) {
+    //                 close.add(successors.get(i).getElement());
+    //                 pq.add(successors.get(i).getElement());
+
+    //             }
+    //         }
+    //     }
+
+    //     return close;
+
+    // }
 
     public double euclidDistence(Node one, Node two) {
         return Math.sqrt((Math.pow(two.getX() - one.getX(), 2) + Math.pow(two.getY() - one.getY(), 2)));
@@ -349,7 +395,7 @@ public class Maze {
     }
 
     public static void main(String[] args) {
-        Maze m = new Maze(15);
+        Maze m = new Maze(10);
         // double s = System.currentTimeMillis();
         // System.out.println(m.count);
         m.create();
@@ -357,41 +403,7 @@ public class Maze {
         // m.format();
         m.print();
         m.writer();
-        // System.out.println(m.g.adjVertices(new Vertex<Node>(new Node("5", 4, 3,
-        // 0))));
-        // m.g.remove(new Node("5", 4, 3, 0));
-        // ArrayList<Vertex<Node>> vertices = m.g.vertices();
-        // for (int j = 0; j < vertices.size(); j++) {
-        // System.out.println("Vertex: " + vertices.get(j).getElement().getX() + " "
-        // + vertices.get(j).getElement().getY() + "------");
-        // for (int i = 0; i < vertices.get(j).getAdjVertice().size(); i++) {
-        // System.out.println(vertices.get(j).getAdjVertice().get(i));
-        // }
-        // }
-        // =======
-        // System.out.println(m.g.numEdge());
-        // // System.out.println(m.g.adjVertices(new Vertex<Node>(new Node("5", 4, 3,
-        // // 0))));
-        // // m.g.remove(new Node("5", 4, 3, 0));
-        // ArrayList<Vertex<Node>> vertices = m.g.vertices();
-        // for (int j = 0; j < vertices.size(); j++) {
-        // System.out.println("Vertex: " + vertices.get(j).getElement().getX() + " "
-        // + vertices.get(j).getElement().getY() + "------");
-        // for (int i = 0; i < vertices.get(j).getAdjVertice().size(); i++) {
-        // System.out.println(vertices.get(j).getAdjVertice().get(i));
-        // }
-        // }
-        // >>>>>>> d40d4465532d6e742097b507cbd3790095519704
 
-        // System.out.println(m.g.numEdge());
-        // double e = System.currentTimeMillis();
-        // System.out.println(e - s);
-        // PriorityQueue<Node> pq = new PriorityQueue<>();
-        // pq.add(new Node("2", 0, 1, 10));
-        // pq.add(new Node("1", 1, 1, 20));
-        // pq.add(new Node("4", 1, 2, 012));
-        // pq.add(new Node("5", 0, 2, 11));
-        // System.out.println(pq.poll());
         ArrayList<Node> node = new ArrayList<Node>();
         node = m.findPath();
 

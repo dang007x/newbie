@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import java.awt.Color;
 
 import app.model.Maze;
 import app.model.Node;
@@ -23,13 +24,16 @@ public class App extends JFrame {
     private JButton newGameButton;
     private JButton tutorial;
     private MazePanel mazePanel;
-    private int mazeSize = 15;
+
+    private int mazeSize = 100;
+    
     private Maze maze = new Maze(mazeSize);
-    private JPanel mainPanel;
+    private Color buttonColor = new Color(19, 15, 64);
+    private Color fore = new Color(255, 255, 255);
 
     public App() {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setSize(700, 700);
+        this.setSize(710, 700);
         this.setLayout(null);
         this.setResizable(false);
         this.setLocationRelativeTo(null);
@@ -39,6 +43,9 @@ public class App extends JFrame {
         buttonPanel.setLayout(new GridLayout(0, 5));
 
         playButton = new JButton("Play");
+
+        playButton.setForeground(fore);
+        playButton.setBackground(buttonColor);
         playButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
@@ -47,9 +54,7 @@ public class App extends JFrame {
                     System.out.println(path.get(i));
                 }
                 mazePanel.move(path);
-                
-
-
+            
                 System.out.println("Clicked Play");
 
             }
@@ -60,6 +65,15 @@ public class App extends JFrame {
         solveButton.setEnabled(false);
         changeMaze = new JButton("ChangeMaze");
         newGameButton = new JButton("New Game");
+        
+        solveButton.setForeground(fore);
+        solveButton.setBackground(buttonColor);
+
+        changeMaze.setForeground(fore);
+        changeMaze.setBackground(buttonColor);
+
+        newGameButton.setForeground(fore);
+        newGameButton.setBackground(buttonColor);
         newGameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
@@ -73,22 +87,21 @@ public class App extends JFrame {
         });
         tutorial = new JButton("Tutorial");
 
+        tutorial.setForeground(fore);
+        tutorial.setBackground(buttonColor);
+
         buttonPanel.add(playButton);
         buttonPanel.add(solveButton);
         buttonPanel.add(changeMaze);
         buttonPanel.add(newGameButton);
         buttonPanel.add(tutorial);
 
-        mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
-        mainPanel.setBounds(0, 50, 700, 620);
-
         maze.create();
         mazePanel = new MazePanel(maze.getMatrix());
 
-        mainPanel.add(mazePanel, BorderLayout.CENTER);
+        mazePanel.setBounds(0, 50, 700, 620);
 
-        this.add(mainPanel);
+        this.add(mazePanel);
         this.add(buttonPanel);
     }
 
