@@ -43,9 +43,9 @@ public class App extends JFrame {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 ArrayList<Node> path = maze.findPath();
-                for (int i = 0; i < path.size(); i++) {
-                    System.out.println(path.get(i));
-                }
+                // for (int i = 0; i < path.size(); i++) {
+                //     System.out.println(path.get(i));
+                // }
                 mazePanel.move(path);
                 
 
