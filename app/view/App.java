@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
 import java.awt.Color;
 
 import app.model.Maze;
@@ -30,15 +31,21 @@ public class App extends JFrame {
     private Integer[] currentPos = { 0, 1 };
     private Integer[] currentPos2 = { 0, 1 };
 
-    
     private Maze maze = new Maze(mazeSize);
-    private int [] [] matrix = maze.getMatrix();
+    private int[][] matrix = maze.getMatrix();
     private Color buttonColor = new Color(19, 15, 64);
     private Color fore = new Color(255, 255, 255);
     private MazePanel mazePanel2;
 
+    private String message = "1. Click \"Play\" to start a game. \n"
+            + "2. Player 1 using W, A, S, D to move Up, Left, Down, Right. \n"
+            + "    Player 2 using I, J, K, L to move Up, Left, Down, Right. \n"
+            + "3. Click \"Solve\" to find the path.\n" 
+            + "4. Click \" Change Maze\" to create a new maze.\n"
+            + "5. Click \"New Game\" to create a new game.\n";
+
     public App(int size) {
-        if(size != 0){
+        if (size != 0) {
             this.mazeSize = size;
             this.maze = new Maze(mazeSize);
             this.currentPos = new Integer[2];
@@ -80,9 +87,9 @@ public class App extends JFrame {
             public void actionPerformed(ActionEvent arg0) {
                 ArrayList<Node> path1 = maze.findPath();
                 // for (int i = 0; i < path.size(); i++) {
-                //     System.out.println(path.get(i));
+                // System.out.println(path.get(i));
                 // }
-                
+
                 mazePanel1.move(path1);
                 mazePanel1.reload(maze.getMatrix());
                 maze.reload();
@@ -99,12 +106,11 @@ public class App extends JFrame {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 String size = JOptionPane.showInputDialog(null, "Input size");
-                
-                if(!size.matches("\\d+")){
+
+                if (!size.matches("\\d+")) {
                     JOptionPane.showMessageDialog(null, "Invalid size");
-                    
                 }
-                
+
                 dispose();
                 App app = new App(Integer.valueOf(size));
                 app.setVisible(true);
@@ -114,7 +120,7 @@ public class App extends JFrame {
 
         });
         newGameButton = new JButton("New Game");
-        
+
         solveButton.setForeground(fore);
         solveButton.setBackground(buttonColor);
 
@@ -126,7 +132,6 @@ public class App extends JFrame {
         newGameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                
                 maze = new Maze(mazeSize);
                 maze.create();
                 matrix = maze.getMatrix();
@@ -142,10 +147,18 @@ public class App extends JFrame {
             }
 
         });
-        tutorial = new JButton("Tutorial");
 
+        tutorial = new JButton("Tutorial");
         tutorial.setForeground(fore);
         tutorial.setBackground(buttonColor);
+        tutorial.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+
+                JOptionPane.showMessageDialog(null, message);
+            }
+
+        });
 
         buttonPanel.add(playButton);
         buttonPanel.add(solveButton);
@@ -161,7 +174,6 @@ public class App extends JFrame {
         mazePanel2 = new MazePanel(maze.getMatrix());
 
         mazePanel2.setBounds(650, 50, 650, 620);
-
 
         this.add(mazePanel1);
         this.add(buttonPanel);
@@ -225,8 +237,6 @@ public class App extends JFrame {
                     currentPos2[0] = 0;
                     currentPos2[1] = 1;
 
-
-                    
                 } else if (matrix[i][j + 1] != 0) {
                     mazePanel1.step(i, j, 1);
                     currentPos[1] = j + 1;
@@ -247,7 +257,6 @@ public class App extends JFrame {
 
         }
     }
-
 
     class CustomKeyListener2 implements KeyListener {
 
@@ -305,7 +314,6 @@ public class App extends JFrame {
                     currentPos[0] = 0;
                     currentPos[1] = 1;
 
-                    
                 } else if (matrix[i][j + 1] != 0) {
                     mazePanel2.step(i, j, 1);
                     currentPos2[1] = j + 1;

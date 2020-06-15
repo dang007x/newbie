@@ -121,7 +121,7 @@ public class Maze {
             Node min = new Node("label", 0, 0, 100000);
             for (Node i : open) {
                 double gx = evalWeight(i, current) + sumCost;
-                double hx = euclidDistence(i, end);
+                double hx = euclidDistence(i, end); 
                 double fx = gx + hx;
                 i.setG(gx);
                 i.setH(hx);
@@ -508,5 +508,4 @@ public class Maze {
         // }
 
     }
-
 }
