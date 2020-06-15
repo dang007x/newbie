@@ -65,6 +65,9 @@ public class MazePanel extends JPanel {
                 if(matrix[i][j] == 5){
                     maze[i][j].setBackground(checked);
                 }
+                if(matrix[i][j] == 6){
+                    maze[i][j].setBackground(Color.MAGENTA);
+                }
             }
         }
     }
