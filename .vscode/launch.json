@@ -9,20 +9,6 @@
             "name": "CodeLens (Launch) - Maze",
             "request": "launch",
             "mainClass": "app.model.Maze",
-            "projectName": "Graph_c69750d9"
-        },
-        {
-            "type": "java",
-            "name": "CodeLens (Launch) - Run",
-            "request": "launch",
-            "mainClass": "app.view.Run",
-            "projectName": "Graph_c69750d9"
-        },
-        {
-            "type": "java",
-            "name": "CodeLens (Launch) - Maze",
-            "request": "launch",
-            "mainClass": "app.model.Maze",
             "projectName": "Graph_57593c3"
         },
         {
