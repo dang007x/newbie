@@ -168,8 +168,10 @@ public class Maze {
                     u.setParent(current);
                 }
                 sumCost += evalWeight(current, u);
+
             }
             close.add(current);
+            matrix[(int) current.getY()][(int) current.getX()] = 5;
         }
 
         Node run = end;
@@ -189,7 +191,7 @@ public class Maze {
         for (int i = 0; i < close.size(); i++) {
             // System.out.println(close.get(i));
             if (close.get(i).equals(n)) {
-                
+
                 return close.get(i).getF();
             }
         }
@@ -203,7 +205,7 @@ public class Maze {
         end = g.vertices().get(g.size() - 1).getElement();
         start.setF(euclidDistence(start, end));
         Node current = null;
-        PriorityQueue <Node> pq = new PriorityQueue<>();
+        PriorityQueue<Node> pq = new PriorityQueue<>();
 
         pq.add(start);
         while (!pq.isEmpty()) {
@@ -212,29 +214,29 @@ public class Maze {
                 close.add(current);
                 break;
             }
-            
+
             close.add(current);
-            matrix[(int)current.getY()][(int) current.getX()] = 5;
+            matrix[(int) current.getY()][(int) current.getX()] = 5;
             ArrayList<Vertex<Node>> successors = g.get(current).getAdjVertice();
             for (int i = 0; i < successors.size(); i++) {
-                
+
                 Node next = successors.get(i).getElement();
                 double g = current.getF() - euclidDistence(current, end)
                         + evalWeight(successors.get(i).getElement(), current);
-                        
+
                 double h = euclidDistence(successors.get(i).getElement(), end);
-                
+
                 next.setF(g + h);
-               
-                if(!close.contains(next) || g + h < getCost(close, next)){
+
+                if (!close.contains(next) || g + h < getCost(close, next)) {
                     next.setParent(current);
                     pq.add(next);
                 }
-                
+
             }
         }
-        while(current != start){
-            //System.out.println("Current: " +current);
+        while (current != start) {
+            // System.out.println("Current: " +current);
             current = current.getParent();
             path.add(current);
         }
@@ -409,7 +411,7 @@ public class Maze {
         }
     }
 
-    public ArrayList<Node> BFS(){
+    public ArrayList<Node> BFS() {
         PriorityQueue<Node> pq = new PriorityQueue<>();
         ArrayList<Vertex<Node>> vertex = g.vertices();
         Node start = vertex.get(0).getElement();
@@ -418,25 +420,25 @@ public class Maze {
 
         Node current = start;
         pq.add(current);
-        while(!pq.isEmpty()){
+        while (!pq.isEmpty()) {
             current = pq.poll();
             close.add(current);
-            //matrix[(int)current.getY()][(int) current.getX()] = 5;
-            if(current.equals(end)){
+            matrix[(int) current.getY()][(int) current.getX()] = 6;
+            if (current.equals(end)) {
                 break;
             }
             for (int i = 0; i < g.get(current).getAdjVertice().size(); i++) {
-                if(!close.contains(g.get(current).getAdjVertice().get(i).getElement())){
+                if (!close.contains(g.get(current).getAdjVertice().get(i).getElement())) {
                     pq.add(g.get(current).getAdjVertice().get(i).getElement());
                     g.get(current).getAdjVertice().get(i).getElement().setParent(current);
                 }
-               
+
             }
         }
 
         ArrayList<Node> path = new ArrayList<>();
-        while(current!= start){
-            
+        while (current != start) {
+
             current = current.getParent();
             path.add(current);
         }
@@ -444,22 +446,62 @@ public class Maze {
         path.add(end);
         return path;
     }
-    public static void main(String[] args) {
-        Maze m = new Maze(10);
-        // double s = System.currentTimeMillis();
-        // System.out.println(m.count);
-        m.create();
 
-        // m.format();
-        m.print();
-        m.writer();
-
-        ArrayList<Node> node = new ArrayList<Node>();
-        node = m.findPathv2();
-
-        for (int i = 0; i < node.size(); i++) {
-            System.out.println(node.get(i));
+    public int count() {
+        int count = 0;
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix.length; j++) {
+                if (matrix[i][j] == 5) {
+                    count++;
+                }
+            }
         }
+        return count;
+
+    }
+
+    public void reload() {
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix.length; j++) {
+                if (matrix[i][j] == 5) {
+                    matrix[i][j] = 1;
+                }
+            }
+        }
+        for (int i = 0; i < g.vertices().size(); i++) {
+            g.vertices().get(i).getElement().setF(0);
+        }
+    }
+
+    public static void main(String[] args) {
+        // for (int i = 0; i < 30; i++) {
+        //     Maze m = new Maze(50);
+
+        //     // double s = System.currentTimeMillis();
+        //     // System.out.println(m.count);
+
+        //     m.create();
+        //     System.out.print(m.g.size() + " ");
+        //     // m.format();
+        //     // m.print();
+        //     // m.writer();
+        //     double s = System.currentTimeMillis();
+        //     ArrayList<Node> node = m.findPath();
+
+        //     double e = System.currentTimeMillis();
+        //     System.out.print((e - s) + " ");
+        //     System.out.println(m.count());
+        // }
+        Maze m = new Maze(20);
+        m.create();
+        m.findPath();
+        m.print();
+        System.out.println("^^^^^^^^^^^^^^^^");
+        m.reload();
+        m.print();
+        // for (int i = 0; i < node.size(); i++) {
+        // System.out.println(node.get(i));
+        // }
 
     }
 

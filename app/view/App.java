@@ -24,25 +24,35 @@ public class App extends JFrame {
     private JButton changeMaze;
     private JButton newGameButton;
     private JButton tutorial;
-    private MazePanel mazePanel;
+    private MazePanel mazePanel1;
     private int status = 0;
-    private int mazeSize = 15;
+    private int mazeSize = 20;
     private Integer[] currentPos = { 0, 1 };
+    private Integer[] currentPos2 = { 0, 1 };
+
     
     private Maze maze = new Maze(mazeSize);
     private int [] [] matrix = maze.getMatrix();
     private Color buttonColor = new Color(19, 15, 64);
     private Color fore = new Color(255, 255, 255);
+    private MazePanel mazePanel2;
 
-    public App() {
+    public App(int size) {
+        if(size != 0){
+            this.mazeSize = size;
+            this.maze = new Maze(mazeSize);
+            this.currentPos = new Integer[2];
+            currentPos[0] = 0;
+            currentPos[1] = 1;
+        }
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setSize(710, 700);
+        this.setSize(1300, 700);
         this.setLayout(null);
         this.setResizable(false);
         this.setLocationRelativeTo(null);
 
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setBounds(0, 0, 700, 50);
+        buttonPanel.setBounds(0, 0, 1300, 50);
         buttonPanel.setLayout(new GridLayout(0, 5));
 
         playButton = new JButton("Play");
@@ -54,25 +64,31 @@ public class App extends JFrame {
             public void actionPerformed(ActionEvent arg0) {
                 changeMaze.setEnabled(false);
                 solveButton.setEnabled(true);
+                maze.writer();
                 status = 1;
-                maze.print();
                 System.out.println("Clicked Play");
 
             }
 
         });
+        playButton.addKeyListener(new CustomKeyListener2());
         playButton.addKeyListener(new CustomKeyListener());
         solveButton = new JButton("Solve");
         solveButton.setEnabled(false);
         solveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                ArrayList<Node> path = maze.findPathv2();
+                ArrayList<Node> path1 = maze.findPath();
                 // for (int i = 0; i < path.size(); i++) {
                 //     System.out.println(path.get(i));
                 // }
-                mazePanel.move(path);
-                mazePanel.reload(maze.getMatrix());
+                
+                mazePanel1.move(path1);
+                mazePanel1.reload(maze.getMatrix());
+                maze.reload();
+                ArrayList<Node> path2 = maze.BFS();
+                mazePanel2.move(path2);
+                mazePanel2.reload(maze.getMatrix());
                 System.out.println("Clicked Play");
 
             }
@@ -82,13 +98,16 @@ public class App extends JFrame {
         changeMaze.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                maze = new Maze(mazeSize);
-                maze.create();
-                mazePanel.reload(maze.getMatrix());
-                currentPos[0] = 0;
-                currentPos[1] = 1;
-                status = 0;
-                solveButton.setEnabled(false);
+                String size = JOptionPane.showInputDialog(null, "Input size");
+                
+                if(!size.matches("\\d+")){
+                    JOptionPane.showMessageDialog(null, "Invalid size");
+                    
+                }
+                
+                dispose();
+                App app = new App(Integer.valueOf(size));
+                app.setVisible(true);
                 System.out.println("Clicked New Game");
 
             }
@@ -110,11 +129,14 @@ public class App extends JFrame {
                 
                 maze = new Maze(mazeSize);
                 maze.create();
-                mazePanel.reload(maze.getMatrix());
+                matrix = maze.getMatrix();
+                mazePanel1.reload(maze.getMatrix());
+                mazePanel2.reload(maze.getMatrix());
                 currentPos[0] = 0;
                 currentPos[1] = 1;
                 status = 0;
                 solveButton.setEnabled(false);
+                changeMaze.setEnabled(true);
                 System.out.println("Clicked New Game");
 
             }
@@ -132,12 +154,18 @@ public class App extends JFrame {
         buttonPanel.add(tutorial);
 
         maze.create();
-        mazePanel = new MazePanel(maze.getMatrix());
+        mazePanel1 = new MazePanel(maze.getMatrix());
 
-        mazePanel.setBounds(0, 50, 700, 620);
+        mazePanel1.setBounds(0, 50, 650, 620);
 
-        this.add(mazePanel);
+        mazePanel2 = new MazePanel(maze.getMatrix());
+
+        mazePanel2.setBounds(650, 50, 650, 620);
+
+
+        this.add(mazePanel1);
         this.add(buttonPanel);
+        this.add(mazePanel2);
     }
 
     class CustomKeyListener implements KeyListener {
@@ -149,7 +177,7 @@ public class App extends JFrame {
                 int i = currentPos[0];
                 int j = currentPos[1];
                 if (i - 1 > 0 && matrix[i - 1][j] != 0) {
-                    mazePanel.step(i, j, 0);
+                    mazePanel1.step(i, j, 0);
                     currentPos[0] = i - 1;
                     System.out.println("Up");
                 }
@@ -160,7 +188,7 @@ public class App extends JFrame {
                 int i = currentPos[0];
                 int j = currentPos[1];
                 if (matrix[i + 1][j] != 0) {
-                    mazePanel.step(i, j, 2);
+                    mazePanel1.step(i, j, 2);
                     currentPos[0] = i + 1;
                     System.out.println("Down");
                 }
@@ -171,7 +199,7 @@ public class App extends JFrame {
                 int i = currentPos[0];
                 int j = currentPos[1];
                 if (matrix[i][j - 1] != 0) {
-                    mazePanel.step(i, j, 3);
+                    mazePanel1.step(i, j, 3);
                     currentPos[1] = j - 1;
                     System.out.println("Left");
                 }
@@ -182,18 +210,25 @@ public class App extends JFrame {
                 int i = currentPos[0];
                 int j = currentPos[1];
                 if (currentPos[0] == matrix.length - 2 && currentPos[1] == matrix.length - 1) {
-                    JOptionPane.showMessageDialog(mazePanel, "Congratulation! \n You have completed the maze");
+                    JOptionPane.showMessageDialog(mazePanel1, "Congratulation! \n You have completed the maze");
                     solveButton.setEnabled(false);
                     changeMaze.setEnabled(true);
                     maze = new Maze(mazeSize);
                     maze.create();
-                    mazePanel.reload(maze.getMatrix());
+                    matrix = maze.getMatrix();
+                    mazePanel1.reload(maze.getMatrix());
+                    mazePanel2.reload(maze.getMatrix());
+
                     status = 0;
                     currentPos[0] = 0;
                     currentPos[1] = 1;
+                    currentPos2[0] = 0;
+                    currentPos2[1] = 1;
+
+
                     
                 } else if (matrix[i][j + 1] != 0) {
-                    mazePanel.step(i, j, 1);
+                    mazePanel1.step(i, j, 1);
                     currentPos[1] = j + 1;
                     System.out.println("Right");
                 }
@@ -213,4 +248,82 @@ public class App extends JFrame {
         }
     }
 
+
+    class CustomKeyListener2 implements KeyListener {
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            // Up
+            if (status == 1 && e.getKeyCode() == KeyEvent.VK_I) {
+                int i = currentPos2[0];
+                int j = currentPos2[1];
+                if (i - 1 > 0 && matrix[i - 1][j] != 0) {
+                    mazePanel2.step(i, j, 0);
+                    currentPos2[0] = i - 1;
+                    System.out.println("Up");
+                }
+
+            }
+            // down
+            if (status == 1 && e.getKeyCode() == KeyEvent.VK_K) {
+                int i = currentPos2[0];
+                int j = currentPos2[1];
+                if (matrix[i + 1][j] != 0) {
+                    mazePanel2.step(i, j, 2);
+                    currentPos2[0] = i + 1;
+                    System.out.println("Down");
+                }
+
+            }
+            // left
+            if (status == 1 && e.getKeyCode() == KeyEvent.VK_J) {
+                int i = currentPos2[0];
+                int j = currentPos2[1];
+                if (matrix[i][j - 1] != 0) {
+                    mazePanel2.step(i, j, 3);
+                    currentPos2[1] = j - 1;
+                    System.out.println("Left");
+                }
+
+            }
+            // right.
+            if (status == 1 && e.getKeyCode() == KeyEvent.VK_L) {
+                int i = currentPos2[0];
+                int j = currentPos2[1];
+                if (currentPos2[0] == matrix.length - 2 && currentPos2[1] == matrix.length - 1) {
+                    JOptionPane.showMessageDialog(mazePanel2, "Congratulation! \n You have completed the maze");
+                    solveButton.setEnabled(false);
+                    changeMaze.setEnabled(true);
+                    maze = new Maze(mazeSize);
+                    maze.create();
+                    matrix = maze.getMatrix();
+                    mazePanel2.reload(maze.getMatrix());
+                    mazePanel1.reload(maze.getMatrix());
+                    status = 0;
+                    currentPos2[0] = 0;
+                    currentPos2[1] = 1;
+                    currentPos[0] = 0;
+                    currentPos[1] = 1;
+
+                    
+                } else if (matrix[i][j + 1] != 0) {
+                    mazePanel2.step(i, j, 1);
+                    currentPos2[1] = j + 1;
+                    System.out.println("Right");
+                }
+
+            }
+
+        }
+
+        @Override
+        public void keyReleased(KeyEvent arg0) {
+
+        }
+
+        @Override
+        public void keyTyped(KeyEvent arg0) {
+
+        }
+    }
 }

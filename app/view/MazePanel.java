@@ -14,7 +14,7 @@ public class MazePanel extends JPanel {
      *
      */
     private static final long serialVersionUID = 1L;
-    private int timeSleep = 100;
+    private int timeSleep = 25;
     private JPanel[][] maze;
 
     private Color pathColor = new Color(232, 65, 24);
@@ -61,6 +61,9 @@ public class MazePanel extends JPanel {
                 }
                 if(matrix[i][j] == 5){
                     maze[i][j].setBackground(Color.GREEN);
+                }
+                if(matrix[i][j] == 6){
+                    maze[i][j].setBackground(Color.MAGENTA);
                 }
             }
         }
