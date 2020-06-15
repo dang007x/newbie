@@ -40,8 +40,7 @@ public class App extends JFrame {
     private String message = "1. Click \"Play\" to start a game. \n"
             + "2. Player 1 using W, A, S, D to move Up, Left, Down, Right. \n"
             + "    Player 2 using I, J, K, L to move Up, Left, Down, Right. \n"
-            + "3. Click \"Solve\" to find the path.\n" 
-            + "4. Click \" Change Maze\" to create a new maze.\n"
+            + "3. Click \"Solve\" to find the path.\n" + "4. Click \" Change Maze\" to create a new maze.\n"
             + "5. Click \"New Game\" to create a new game.\n";
 
     public App(int size) {
@@ -102,22 +101,7 @@ public class App extends JFrame {
 
         });
         changeMaze = new JButton("ChangeMaze");
-        changeMaze.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                String size = JOptionPane.showInputDialog(null, "Input size");
-
-                if (!size.matches("\\d+")) {
-                    JOptionPane.showMessageDialog(null, "Invalid size");
-                }
-
-                dispose();
-                App app = new App(Integer.valueOf(size));
-                app.setVisible(true);
-                System.out.println("Clicked New Game");
-            }
-
-        });
+        
         newGameButton = new JButton("New Game");
 
         solveButton.setForeground(fore);
@@ -133,11 +117,11 @@ public class App extends JFrame {
                 if (!size.matches("\\d+")) {
                     JOptionPane.showMessageDialog(null, "Invalid size");
 
-                } else {
-                    dispose();
-                    App app = new App(Integer.valueOf(size));
-                    app.setVisible(true);
                 }
+                dispose();
+                App app = new App(Integer.valueOf(size));
+                app.setVisible(true);
+
                 System.out.println("Clicked Change Maze");
             }
         });
@@ -169,7 +153,6 @@ public class App extends JFrame {
         tutorial.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-
                 JOptionPane.showMessageDialog(null, message);
             }
 

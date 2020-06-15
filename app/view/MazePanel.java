@@ -17,6 +17,7 @@ public class MazePanel extends JPanel {
     private int timeSleep = 25;
     private JPanel[][] maze;
     private Color pathColor = new Color(232, 65, 24);
+    private Color emptyPath2 = new Color(232, 67, 147);
     private Color emptyPath = new Color(247, 241, 227);
     private Color wall = new Color(39, 60, 117);
     private Color end = new Color(247, 143, 179);
@@ -66,7 +67,7 @@ public class MazePanel extends JPanel {
                     maze[i][j].setBackground(checked);
                 }
                 if(matrix[i][j] == 6){
-                    maze[i][j].setBackground(Color.MAGENTA);
+                    maze[i][j].setBackground(emptyPath2);
                 }
             }
         }
