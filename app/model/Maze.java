@@ -120,7 +120,7 @@ public class Maze {
             Node min = new Node("label", 0, 0, 100000);
             for (Node i : open) {
                 double gx = evalWeight(i, current) + sumCost;
-                double hx = euclidDistence(i, end);
+                double hx = euclidDistence(i, end); 
                 double fx = gx + hx;
                 i.setG(gx);
                 i.setH(hx);
@@ -180,53 +180,6 @@ public class Maze {
 
         return path;
     }
-
-    // public double getCost(ArrayList<Node> close, Node n) {
-
-    //     for (int i = 0; i < close.size(); i++) {
-    //         if (close.get(i).equals(n)) {
-    //             return close.get(i).getF() - euclidDistence(n, end);
-    //         }
-    //     }
-    //     return 0;
-    // }
-
-    // public ArrayList<Node> findPathv2() {
-    //     ArrayList<Node> path = new ArrayList<>();
-    //     ArrayList<Node> close = new ArrayList<>();
-    //     Node start = g.vertices().get(0).getElement();
-    //     Node end = g.vertices().get(g.size() - 1).getElement();
-    //     start.setF(euclidDistence(start, end));
-
-    //     PriorityQueue<Node> pq = new PriorityQueue<>();
-
-    //     pq.add(start);
-    //     while (!pq.isEmpty()) {
-    //         Node current = pq.poll();
-    //         if (current.equals(end)) { // reach end
-    //             close.add(current);
-    //             break;
-    //         }
-    //         close.add(current);
-    //         ArrayList<Vertex<Node>> successors = g.get(current).getAdjVertice();
-    //         for (int i = 0; i < successors.size(); i++) {
-    //             double g = current.getF() - euclidDistence(current, end)
-    //                     + evalWeight(successors.get(i).getElement(), current);
-    //             double h = euclidDistence(successors.get(i).getElement(), end);
-    //             successors.get(i).getElement().setF(g + h);
-
-    //             if (!close.contains(successors.get(i).getElement())
-    //                     || g < getCost(close, successors.get(i).getElement())) {
-    //                 close.add(successors.get(i).getElement());
-    //                 pq.add(successors.get(i).getElement());
-
-    //             }
-    //         }
-    //     }
-
-    //     return close;
-
-    // }
 
     public double euclidDistence(Node one, Node two) {
         return Math.sqrt((Math.pow(two.getX() - one.getX(), 2) + Math.pow(two.getY() - one.getY(), 2)));
@@ -394,7 +347,7 @@ public class Maze {
     }
 
     public static void main(String[] args) {
-        Maze m = new Maze(10);
+        Maze m = new Maze(15);
         // double s = System.currentTimeMillis();
         // System.out.println(m.count);
         m.create();

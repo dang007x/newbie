@@ -16,7 +16,6 @@ public class MazePanel extends JPanel {
     private static final long serialVersionUID = 1L;
     private int timeSleep = 25;
     private JPanel[][] maze;
-
     private Color pathColor = new Color(232, 65, 24);
     private Color emptyPath = new Color(247, 241, 227);
     private Color wall = new Color(39, 60, 117);
@@ -47,8 +46,11 @@ public class MazePanel extends JPanel {
     }
 
     public void reload(int[][] matrix) {
+        // maze = new JPanel[matrix.length][matrix.length];
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix.length; j++) {
+                // JPanel p = new JPanel();
+                // maze[i][j] = p;
                 maze[i][j].setBackground(emptyPath);
                 if (matrix[i][j] == 0) {
                     maze[i][j].setBackground(wall);
