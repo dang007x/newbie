@@ -3,6 +3,7 @@ package app.model;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.PriorityQueue;
 import java.util.Random;
 
 import api.Graph;
@@ -16,7 +17,7 @@ public class Maze {
     private Graph<Double, Node> g = new Graph<>();
     private Vertex<Node> v;
     private int index = 0;
-    //private Node end;
+    private Node end;
 
     public Maze(int size) {
         if (size % 2 == 0) {
@@ -149,7 +150,7 @@ public class Maze {
                 u.setF(u.getG() + euclidDistence(u, end));
                 double i_cost = current.getG() + evalWeight(u, current);
                 if (open.contains(u)) {
-                    if(u.getG() <= i_cost){
+                    if (u.getG() <= i_cost) {
                         continue;
                     }
                 } else if (close.contains(u)) {
@@ -169,6 +170,7 @@ public class Maze {
                 sumCost += evalWeight(current, u);
             }
             close.add(current);
+            matrix[(int)current.getY()][(int) current.getX()] = 5;
         }
 
         Node run = end;
@@ -177,10 +179,12 @@ public class Maze {
             run = run.getParent();
         }
         Collections.reverse(path);
+        path.add(end);
 
         return path;
     }
 
+    
     public double euclidDistence(Node one, Node two) {
         return Math.sqrt((Math.pow(two.getX() - one.getX(), 2) + Math.pow(two.getY() - one.getY(), 2)));
     }
@@ -346,23 +350,72 @@ public class Maze {
         }
     }
 
-    public static void main(String[] args) {
-        Maze m = new Maze(15);
-        // double s = System.currentTimeMillis();
-        // System.out.println(m.count);
-        m.create();
+    public ArrayList<Node> BFS(){
+        PriorityQueue<Node> pq = new PriorityQueue<>();
+        ArrayList<Vertex<Node>> vertex = g.vertices();
+        Node start = vertex.get(0).getElement();
+        end = vertex.get(vertex.size() - 1).getElement();
+        ArrayList<Node> close = new ArrayList<>();
 
-        // m.format();
-        m.print();
-        m.writer();
-
-        ArrayList<Node> node = new ArrayList<Node>();
-        node = m.findPath();
-
-        for (int i = 0; i < node.size(); i++) {
-            System.out.println(node.get(i));
+        Node current = start;
+        pq.add(current);
+        while(!pq.isEmpty()){
+            current = pq.poll();
+            close.add(current);
+            matrix[(int)current.getY()][(int) current.getX()] = 5;
+            if(current.equals(end)){
+                break;
+            }
+            for (int i = 0; i < g.get(current).getAdjVertice().size(); i++) {
+                if(!close.contains(g.get(current).getAdjVertice().get(i).getElement())){
+                    pq.add(g.get(current).getAdjVertice().get(i).getElement());
+                    g.get(current).getAdjVertice().get(i).getElement().setParent(current);
+                }
+               
+            }
         }
 
+        ArrayList<Node> path = new ArrayList<>();
+        while(current!= start){
+            
+            current = current.getParent();
+            path.add(current);
+        }
+        Collections.reverse(path);
+        path.add(end);
+        return path;
     }
 
+    public int count() {
+        int count = 0;
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix.length; j++) {
+                if (matrix[i][j] == 5) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    public static void main(String[] args) {
+        for (int i = 0; i < 30; i++) {
+            Maze m = new Maze(200);
+            
+            // double s = System.currentTimeMillis();
+            // System.out.println(m.count);
+
+            m.create();
+            System.out.print(m.g.size() + " ");
+            // m.format();
+            // m.print();
+            // m.writer();
+            double s = System.currentTimeMillis();
+            ArrayList<Node> node = m.findPath();
+
+            double e = System.currentTimeMillis();
+            System.out.print((e - s) + " ");
+            System.out.println(m.count());
+        }
+    }
 }

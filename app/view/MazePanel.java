@@ -20,6 +20,7 @@ public class MazePanel extends JPanel {
     private Color emptyPath = new Color(247, 241, 227);
     private Color wall = new Color(39, 60, 117);
     private Color end = new Color(247, 143, 179);
+    private Color checked = new Color(0, 148, 50);
 
     public MazePanel(int matrix[][]) {
         maze = new JPanel[matrix.length][matrix.length];
@@ -61,6 +62,9 @@ public class MazePanel extends JPanel {
                 if (matrix[i][j] == 4) {
                     maze[i][j].setBackground(end);
                 }
+                if(matrix[i][j] == 5){
+                    maze[i][j].setBackground(checked);
+                }
             }
         }
     }
@@ -98,50 +102,37 @@ public class MazePanel extends JPanel {
                         }
                     }
                 }
+                
             }
         }).start();
         ;
 
     }
 
-    public void step(int x1, int y1, int x2, int y2) {
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                if (x1 == x2) {
-                    int i = y1;
-                    while (i < y2) {
-                        maze[i + 1][x1].setBackground(new Color(46, 139, 87));
-
-                        maze[i][x1].setBackground(emptyPath);
-                        try {
-                            Thread.sleep(timeSleep);
-                        } catch (InterruptedException e) {
-
-                            e.printStackTrace();
-                        }
-                        i++;
-
-                    }
-                }
-                if (y1 == y2) {
-                    int i = x1;
-                    while (i < x2) {
-                        maze[y1][i + 1].setBackground(new Color(46, 139, 87));
-
-                        maze[y1][i].setBackground(emptyPath);
-                        try {
-                            Thread.sleep(timeSleep);
-                        } catch (InterruptedException e) {
-
-                            e.printStackTrace();
-                        }
-                        i++;
-
-                    }
-                }
-            }
-        }).start();
+    public void step(int i, int j, int direction) {
+        switch (direction) {
+            case 0:
+            // System.out.println(0);
+                maze[i][j].setBackground(emptyPath);
+                maze[i - 1][j].setBackground(end);
+                break;
+            case 1:
+               // System.out.println(1);
+                maze[i][j].setBackground(emptyPath);
+                maze[i][j + 1].setBackground(end);
+                break;
+            case 2:
+                //System.out.println(2);
+                maze[i][j].setBackground(emptyPath);
+                maze[i + 1][j].setBackground(end);
+                break;
+            case 3:
+                //System.out.println(3);
+                maze[i][j].setBackground(emptyPath);
+                maze[i][j - 1].setBackground(end);
+                break;
+            default:
+                break;
+        }
     }
 }
