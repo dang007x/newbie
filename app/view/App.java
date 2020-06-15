@@ -85,17 +85,15 @@ public class App extends JFrame {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 ArrayList<Node> path1 = maze.findPath();
-                // for (int i = 0; i < path.size(); i++) {
-                // System.out.println(path.get(i));
-                // }
-
+                
                 mazePanel1.move(path1);
                 mazePanel1.reload(maze.getMatrix());
                 maze.reload();
                 ArrayList<Node> path2 = maze.BFS();
                 mazePanel2.move(path2);
                 mazePanel2.reload(maze.getMatrix());
-                System.out.println("Clicked Play");
+                status = 0;
+                System.out.println("Clicked Solve");
 
             }
 
