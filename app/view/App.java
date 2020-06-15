@@ -89,7 +89,7 @@ public class App extends JFrame {
                 ArrayList<Node> path2 = maze.BFS();
                 mazePanel2.move(path2);
                 mazePanel2.reload(maze.getMatrix());
-                System.out.println("Clicked Play");
+                System.out.println("Clicked Solve");
 
             }
 
@@ -108,7 +108,7 @@ public class App extends JFrame {
                 dispose();
                 App app = new App(Integer.valueOf(size));
                 app.setVisible(true);
-                System.out.println("Clicked New Game");
+                System.out.println("Clicked Change Maze");
 
             }
 

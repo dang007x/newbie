@@ -228,11 +228,21 @@ public class Maze {
 
                 next.setF(g + h);
 
-                if (!close.contains(next) || g + h < getCost(close, next)) {
+                if (pq.contains(next)) {
+                    if (getCost(close, next) < g) {
+                        next.setParent(current);
+                    }
+                }
+                if (close.contains(next)) {
+                    if (getCost(close, next) < g) {
+                        close.remove(next);
+                        pq.add(next);
+                    }
+                }
+                if (!pq.contains(next)) {
                     next.setParent(current);
                     pq.add(next);
                 }
-
             }
         }
         while (current != start) {
@@ -475,30 +485,24 @@ public class Maze {
 
     public static void main(String[] args) {
         // for (int i = 0; i < 30; i++) {
-        //     Maze m = new Maze(50);
+        //Maze m = new Maze(50);
 
-        //     // double s = System.currentTimeMillis();
-        //     // System.out.println(m.count);
+        // // double s = System.currentTimeMillis();
+        // // System.out.println(m.count);
 
-        //     m.create();
-        //     System.out.print(m.g.size() + " ");
-        //     // m.format();
-        //     // m.print();
-        //     // m.writer();
-        //     double s = System.currentTimeMillis();
-        //     ArrayList<Node> node = m.findPath();
+        // m.create();
+        // System.out.print(m.g.size() + " ");
+        // // m.format();
+        // // m.print();
+        // // m.writer();
+        // double s = System.currentTimeMillis();
+        // ArrayList<Node> node = m.findPath();
 
-        //     double e = System.currentTimeMillis();
-        //     System.out.print((e - s) + " ");
-        //     System.out.println(m.count());
+        // double e = System.currentTimeMillis();
+        // System.out.print((e - s) + " ");
+        // System.out.println(m.count());
         // }
-        Maze m = new Maze(20);
-        m.create();
-        m.findPath();
-        m.print();
-        System.out.println("^^^^^^^^^^^^^^^^");
-        m.reload();
-        m.print();
+        
         // for (int i = 0; i < node.size(); i++) {
         // System.out.println(node.get(i));
         // }
